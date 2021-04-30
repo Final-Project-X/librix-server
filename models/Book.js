@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+
 const { Schema, model } = mongoose;
 
 const BookSchema = new Schema(
   {
-    //general book information maybe api
+    // general book information maybe api
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
     authors: [{ type: String, required: true }],
@@ -16,7 +17,7 @@ const BookSchema = new Schema(
     // Pics
     selectedFiles: [{ type: String, required: true }],
     // availability by default
-    reserved: { type: boolean, default: false },
+    reserved: { type: Boolean, default: false },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -54,5 +55,5 @@ module.exports = Book;
  *
  * /
 
- 
-// userOne(() => booksToOffer.interestedUsers) => userTwo(() => booksInterestedIn.owner*/
+
+ // userOne(() => booksToOffer.interestedUsers) => userTwo(() => booksInterestedIn.owner*/
