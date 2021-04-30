@@ -50,7 +50,7 @@ exports.addUser = async (req, res, next) => {
     let user = new User(userData);
     // todo : set up the generate methods
     // generate a token
-    const token = user.generateAuthToken();
+    //const token = user.generateAuthToken();
     // generate an email verification token
 
     //todo : do we want email verification?
@@ -61,13 +61,8 @@ exports.addUser = async (req, res, next) => {
     //sendVerificationEmail(user);
 
     // put the token in the response
-    res
-      .cookie("token", token, {
-        expires: new Date(Date.now() + 6048000),
-        secure: false, // http
-        httpOnly: true,
-      })
-      .json(user);
+    // later we put a cookie in the res
+    res.json(user);
   } catch (err) {
     next(err); // forward error to central error handler
   }
@@ -88,7 +83,7 @@ exports.deleteUser = async (req, res, next) => {
 };
 
 exports.loginUser = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
   try {
     if (!email.find()) {
       //todo : possibly find better solution
@@ -99,13 +94,8 @@ exports.loginUser = async (req, res, next) => {
     //const token = user.generateAuthToken();
 
     // put the token in the response
-    res
-      .cookie("token", token, {
-        expires: new Date(Date.now() + 6048000),
-        secure: false, // http
-        httpOnly: true,
-      })
-      .json(user);
+    // later we supply a cooke in the res
+    res.json(user);
   } catch (err) {
     next(err);
   }
