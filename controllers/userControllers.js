@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const bcryptjs = require("bcryptjs");
+//const bcryptjs = require("bcryptjs");
 
 /**
  * things to think about
@@ -15,7 +15,7 @@ exports.getUsers = async (req, res) => {
 exports.getUser = async (req, res, next) => {
   // Grab the id from the url
   const { id } = req.params;
-  // Find the todo with that id
+  // Find the user with that id
   try {
     let user = await User.findById(id);
     res.json(user);
@@ -30,9 +30,9 @@ exports.updateUser = async (req, res) => {
   const { id } = req.params;
   // todo : do we have a middle ware to check the req.body to see if the information is good or allowed?
   try {
-    let userUpdated = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    let user = await User.findById(id); // update the user fields
+    Object.assign(user, req.body);
+    const userUpdated = await user.save(); // => this will trigger the pre save hook
     res.json(userUpdated);
   } catch (err) {
     next(err);
@@ -44,7 +44,8 @@ exports.addUser = async (req, res, next) => {
   const userData = req.body;
   try {
     // overwrite password with password hash
-    userData.password = bcryptjs.hashSync(userData.password);
+    //userData.password = bcryptjs.hashSync(userData.password);
+
     // create the user and grab the user id
     let user = new User(userData);
     // todo : set up the generate methods
