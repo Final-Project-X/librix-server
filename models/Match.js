@@ -1,18 +1,27 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 const MatchSchema = new Schema(
   {
     BookToChange: {
       type: Schema.Types.ObjectId,
-      ref: "Book",
+      ref: 'Book',
     },
     BookToReceive: {
       type: Schema.Types.ObjectId,
-      ref: "Book",
+      ref: 'Book',
     },
-
-    status: { type: string, required: true }, // pending / exchanged / rejected
+    chat: [
+      {
+        sender: { type: Schema.Types.ObjectId, ref: 'User' },
+        message: {
+          type: String,
+          required: true,
+        },
+        timeSent: { type: Date, required: true },
+      },
+    ],
+    status: { type: String, required: true }, // pending / exchanged / rejected
   },
   {
     versionKey: false,
@@ -20,6 +29,6 @@ const MatchSchema = new Schema(
   }
 );
 
-const Match = model("Match", MatchSchema);
+const Match = model('Match', MatchSchema);
 
 module.exports = Match;
