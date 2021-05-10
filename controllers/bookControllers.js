@@ -1,9 +1,14 @@
 const Book = require('../models/Book');
+const User = require('../models/User');
 
 exports.getBook = async (req, res) => {
   const { id } = req.params;
-  let book = await Book.findById(id);
-  res.json(book);
+  try {
+    let book = await Book.findById(id);
+    res.json(book);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getBooks = async (req, res) => {
@@ -13,17 +18,30 @@ exports.getBooks = async (req, res) => {
 
 exports.addBook = async (req, res, next) => {
   const bookData = req.body;
+  const { owner } = req.body;
+
+  //todo: add middleware to check book data is correct
 
   try {
     let newBook = await Book.create(bookData);
-    res.json(newBook);
+    let addBookToUser = await User.findByIdAndUpdate(
+      owner,
+      { $push: { booksToOffer: newBook._id } },
+      { new: true }
+    );
+    res.json({ newBook, addBookToUser });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
 exports.updateBook = async (req, res, next) => {
   const { id } = req.params;
+
+  if (!req.body) {
+    //todo: add the custom error here
+    return;
+  }
 
   try {
     const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
@@ -42,7 +60,6 @@ exports.deleteBook = async (req, res, next) => {
     let deletedBook = await Book.findByIdAndDelete(id);
     res.json(deletedBook);
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
@@ -58,14 +75,13 @@ exports.addInterestedUser = async (req, res, next) => {
   try {
     let updatedInterestedUser = await Book.findByIdAndUpdate(
       bookId,
-      { interestedUsers: [...interestedUsers, userId] },
+      { $push: { interestedUsers: userId } },
       {
         new: true,
       }
     );
     res.json(updatedInterestedUser);
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };

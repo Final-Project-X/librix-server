@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require('../models/User');
 //const bcryptjs = require("bcryptjs");
 
 /**
@@ -85,8 +85,11 @@ exports.deleteUser = async (req, res, next) => {
 exports.loginUser = async (req, res, next) => {
   const { email } = req.body;
   try {
-    if (!email.find()) {
-      //todo : possibly find better solution
+    const userFound = await User.findOne({ email });
+
+    if (!userFound) {
+      //todo : replace with custom error handler
+      res.send('no user was found with this email!');
       return;
     }
 
@@ -95,7 +98,7 @@ exports.loginUser = async (req, res, next) => {
 
     // put the token in the response
     // later we supply a cooke in the res
-    res.json(user);
+    res.json(userFound);
   } catch (err) {
     next(err);
   }
