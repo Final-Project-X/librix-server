@@ -6,12 +6,13 @@ const {
   getBooks,
   addBook,
   deleteBook,
+  updateBook,
   addInterestedUser,
 } = require('../controllers/bookControllers');
 
 router.route('/').get(getBooks).post(addBook);
 
-router.route('/:id').get(getBook).delete(deleteBook);
+router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 
 router.route('/user').post(addInterestedUser);
 
