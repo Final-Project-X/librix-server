@@ -4,19 +4,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const booksRouter = require('./routes/booksRouter');
 
 const socket = require('socket.io');
 const { webSocket } = require('./socket/socketio.js');
 
 const server = app.listen(PORT, () => {
   console.log(`👍 Backend Server started at http://localhost:${PORT}`);
-  });
-
+});
 
 //Connect to Db
 require('./helpers/db-connect');
 
-  
 app.use(express.static('public'));
 
 const io = socket(server, {
@@ -42,6 +41,8 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use('/books', booksRouter);
 
 //ERROR HANDLING
 app.use(function errorHandler(err, req, res, next) {
