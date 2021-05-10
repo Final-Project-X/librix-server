@@ -21,3 +21,33 @@ exports.addBook = async (req, res, next) => {
     console.log(err);
   }
 };
+
+exports.deleteBook = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    let deletedBook = await Book.findByIdAndDelete(id);
+    res.json(deletedBook);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
+exports.addInterestedUser = async (req, res, next) => {
+  const { userId, bookId } = req.body;
+
+  try {
+    let updatedInterestedUser = await Book.findByIdAndUpdate(
+      bookId,
+      { interestedUsers: [...interestedUsers, userId] },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedInterestedUser);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};

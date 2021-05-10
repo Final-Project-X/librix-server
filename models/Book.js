@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const { Schema, model } = mongoose;
 
@@ -20,12 +20,13 @@ const BookSchema = new Schema(
     reserved: { type: Boolean, default: false },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
+      required: true,
     },
     interestedUsers: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
   },
@@ -35,7 +36,7 @@ const BookSchema = new Schema(
   }
 );
 
-const Book = model("Book", BookSchema);
+const Book = model('Book', BookSchema);
 
 module.exports = Book;
 
