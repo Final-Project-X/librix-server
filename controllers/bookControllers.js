@@ -1,33 +1,48 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
+const customError = require('../helpers/customErrorHandler');
+const mongoose = require('mongoose');
 
-exports.getBook = async (req, res) => {
+exports.getBook = async (req, res, next) => {
   const { id } = req.params;
   try {
     let book = await Book.findById(id);
+    // id is a valid mongoose id
+    if (!book) {
+      next(customError(`Book with ID: ${id} does not exist`, 400));
+    }
     res.json(book);
   } catch (err) {
+    // id is not a valid mongoose id
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`ID: ${id} is not valid`, 400));
+    }
+    // server error
     next(err);
   }
 };
 
 exports.getUserLibrary = async (req, res, next) => {
   const { city } = req.params;
-
-  //if (!city) {
-  //  customError('A city must be provided', 400);
-  //  return;
-  //}
+  // todo : check if its an actual city and make sure it starts with a capital letter
+  // todo : check the user has not matched or is not already an interest user of one of the books
 
   try {
-    let userLibrary = await Book.find({}).populate({
-      path: 'owner',
-      match: {
-        address: { city: city },
-      },
-    });
+    let userLibrary = await Book.find().where('city').equals(city);
+    if (userLibrary.length === 0) {
+      next(
+        customError(
+          `There are no book available to trade in this city: ${city}`,
+          400
+        )
+      );
+      return;
+    }
     res.json({ userLibrary });
   } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`Book with ID ${id} does not exist`, 400));
+    }
     next(err);
   }
 };
@@ -38,10 +53,9 @@ exports.getBooks = async (req, res) => {
 };
 
 exports.addBook = async (req, res, next) => {
+  //todo: create middleware to check the req.body
   const bookData = req.body;
   const { owner } = req.body;
-
-  //todo: add middleware to check book data is correct
 
   try {
     let newBook = await Book.create(bookData);
@@ -57,19 +71,19 @@ exports.addBook = async (req, res, next) => {
 };
 
 exports.updateBook = async (req, res, next) => {
+  //todo : create middle ware to check req.body is okay
+  const bookData = req.body;
   const { id } = req.params;
 
-  if (!req.body) {
-    //todo: add the custom error here
-    return;
-  }
-
   try {
-    const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
+    const updatedBook = await Book.findByIdAndUpdate(id, bookData, {
       new: true,
     });
     res.json(updatedBook);
   } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`Book with ID ${id} does not exist`, 400));
+    }
     next(err);
   }
 };
@@ -81,6 +95,9 @@ exports.deleteBook = async (req, res, next) => {
     let deletedBook = await Book.findByIdAndDelete(id);
     res.json(deletedBook);
   } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`Book with ID ${id} does not exist`, 400));
+    }
     next(err);
   }
 };
@@ -89,8 +106,7 @@ exports.addInterestedUser = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
   if (!userId || !bookId) {
-    res.json('A user ID and a book ID must be provided.');
-    return;
+    next(customError('A user ID and a book ID must be provided', 400));
   }
 
   try {
