@@ -1,29 +1,24 @@
 const Book = require('../models/Book');
 const customError = require('../helpers/customErrorHandler');
+const mongoose = require('mongoose');
 
-exports.getBook = async (req, res) => {
+exports.getBook = async (req, res, next) => {
   const { id } = req.params;
-
-  if (!id) {
-    customError(`The book with id: ${id} does not exist`, 400);
-    return;
-  }
 
   try {
     let book = await Book.findById(id);
     res.json(book);
   } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`Book with ID ${id} does not exist`, 400));
+    }
     next(err);
   }
 };
 
 exports.getBooks = async (req, res) => {
-  try {
-    let books = await Book.find();
-    res.json(books);
-  } catch (err) {
-    next(err);
-  }
+  let books = await Book.find();
+  res.json(books);
 };
 
 exports.addBook = async (req, res, next) => {
@@ -40,11 +35,7 @@ exports.addBook = async (req, res, next) => {
 
 exports.updateBook = async (req, res, next) => {
   const { id } = req.params;
-
-  if (!id) {
-    customError(`The book with id: ${id} does not exist`, 400);
-    return;
-  }
+  //todo : create middle ware to check req.body is okay
 
   try {
     const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
@@ -52,6 +43,9 @@ exports.updateBook = async (req, res, next) => {
     });
     res.json(updatedBook);
   } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`Book with ID ${id} does not exist`, 400));
+    }
     next(err);
   }
 };
@@ -59,15 +53,13 @@ exports.updateBook = async (req, res, next) => {
 exports.deleteBook = async (req, res, next) => {
   const { id } = req.params;
 
-  if (!id) {
-    customError(`The book with id: ${id} does not exist`, 400);
-    return;
-  }
-
   try {
     let deletedBook = await Book.findByIdAndDelete(id);
     res.json(deletedBook);
   } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`Book with ID ${id} does not exist`, 400));
+    }
     next(err);
   }
 };
