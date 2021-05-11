@@ -11,6 +11,27 @@ exports.getBook = async (req, res) => {
   }
 };
 
+exports.getUserLibrary = async (req, res, next) => {
+  const { city } = req.params;
+
+  //if (!city) {
+  //  customError('A city must be provided', 400);
+  //  return;
+  //}
+
+  try {
+    let userLibrary = await Book.find({}).populate({
+      path: 'owner',
+      match: {
+        address: { city: city },
+      },
+    });
+    res.json({ userLibrary });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getBooks = async (req, res) => {
   let books = await Book.find();
   res.json(books);
