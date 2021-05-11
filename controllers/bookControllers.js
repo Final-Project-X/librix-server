@@ -4,6 +4,11 @@ const customError = require('../helpers/customErrorHandler');
 exports.getBook = async (req, res) => {
   const { id } = req.params;
 
+  if (!id) {
+    customError(`The book with id: ${id} does not exist`, 400);
+    return;
+  }
+
   try {
     let book = await Book.findById(id);
     res.json(book);
@@ -36,6 +41,11 @@ exports.addBook = async (req, res, next) => {
 exports.updateBook = async (req, res, next) => {
   const { id } = req.params;
 
+  if (!id) {
+    customError(`The book with id: ${id} does not exist`, 400);
+    return;
+  }
+
   try {
     const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -48,6 +58,11 @@ exports.updateBook = async (req, res, next) => {
 
 exports.deleteBook = async (req, res, next) => {
   const { id } = req.params;
+
+  if (!id) {
+    customError(`The book with id: ${id} does not exist`, 400);
+    return;
+  }
 
   try {
     let deletedBook = await Book.findByIdAndDelete(id);
