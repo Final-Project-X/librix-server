@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const { Schema, model } = mongoose;
 
@@ -6,10 +6,12 @@ const BookSchema = new Schema(
   {
     // general book information maybe api
     title: { type: String, required: true },
-    subtitle: { type: String, required: true },
+    subtitle: { type: String, required: false },
+    description: { type: String, required: false },
     authors: [{ type: String, required: true }],
-    publishedDate: { type: Number, required: true },
-    isbn: { type: Number, required: true },
+    publishedDate: { type: String, required: true },
+    isbn: [{ type: String }],
+    city: { type: String, required: true, default: 'Berlin' },
     pages: { type: Number, required: false },
     // manual upload
     shape: { type: String, required: true },
@@ -20,12 +22,12 @@ const BookSchema = new Schema(
     reserved: { type: Boolean, default: false },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     interestedUsers: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
   },
@@ -35,7 +37,7 @@ const BookSchema = new Schema(
   }
 );
 
-const Book = model("Book", BookSchema);
+const Book = model('Book', BookSchema);
 
 module.exports = Book;
 
