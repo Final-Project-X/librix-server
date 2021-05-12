@@ -1,13 +1,44 @@
 const Book = require('../models/Book');
+const User = require('../models/User');
 const customError = require('../helpers/customErrorHandler');
 const mongoose = require('mongoose');
 
 exports.getBook = async (req, res, next) => {
   const { id } = req.params;
-
   try {
     let book = await Book.findById(id);
+    // id is a valid mongoose id
+    if (!book) {
+      next(customError(`Book with ID: ${id} does not exist`, 400));
+    }
     res.json(book);
+  } catch (err) {
+    // id is not a valid mongoose id
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`ID: ${id} is not valid`, 400));
+    }
+    // server error
+    next(err);
+  }
+};
+
+exports.getUserLibrary = async (req, res, next) => {
+  const { city } = req.params;
+  // todo : check if its an actual city and make sure it starts with a capital letter
+  // todo : check the user has not matched or is not already an interest user of one of the books
+
+  try {
+    let userLibrary = await Book.find().where('city').equals(city);
+    if (userLibrary.length === 0) {
+      next(
+        customError(
+          `There are no book available to trade in this city: ${city}`,
+          400
+        )
+      );
+      return;
+    }
+    res.json({ userLibrary });
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`Book with ID ${id} does not exist`, 400));
@@ -24,21 +55,28 @@ exports.getBooks = async (req, res) => {
 exports.addBook = async (req, res, next) => {
   //todo: create middleware to check the req.body
   const bookData = req.body;
+  const { owner } = req.body;
 
   try {
     let newBook = await Book.create(bookData);
-    res.json(newBook);
+    let addBookToUser = await User.findByIdAndUpdate(
+      owner,
+      { $push: { booksToOffer: newBook._id } },
+      { new: true }
+    );
+    res.json({ newBook, addBookToUser });
   } catch (err) {
     next(err);
   }
 };
 
 exports.updateBook = async (req, res, next) => {
-  const { id } = req.params;
   //todo : create middle ware to check req.body is okay
+  const bookData = req.body;
+  const { id } = req.params;
 
   try {
-    const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
+    const updatedBook = await Book.findByIdAndUpdate(id, bookData, {
       new: true,
     });
     res.json(updatedBook);
@@ -67,16 +105,14 @@ exports.deleteBook = async (req, res, next) => {
 exports.addInterestedUser = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
-  //todo : turn this check into a middleware
   if (!userId || !bookId) {
-    customError('A user ID and a book ID must be provided', 500);
-    return;
+    next(customError('A user ID and a book ID must be provided', 400));
   }
 
   try {
     let updatedInterestedUser = await Book.findByIdAndUpdate(
       bookId,
-      { interestedUsers: [...interestedUsers, userId] },
+      { $push: { interestedUsers: userId } },
       {
         new: true,
       }

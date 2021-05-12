@@ -5,6 +5,8 @@ const PORT = process.env.PORT || 5000;
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const booksRouter = require('./routes/booksRouter');
+const usersRouter = require('./routes/usersRouter');
+const matchesRouter = require('./routes/matchesRouter');
 
 const socket = require('socket.io');
 const { webSocket } = require('./socket/socketio.js');
@@ -43,6 +45,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/books', booksRouter);
+app.use('/users', usersRouter);
+app.use('/matches', matchesRouter);
 
 //ERROR HANDLING
 app.use(function errorHandler(err, req, res, next) {

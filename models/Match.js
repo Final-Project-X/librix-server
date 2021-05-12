@@ -3,14 +3,19 @@ const { Schema, model } = mongoose;
 
 const MatchSchema = new Schema(
   {
-    BookToChange: {
+    //? how do you tell which is user is book to change and which user is book to recieve?
+    //? should we make an array with two objects containing a user and book ref?
+    bookToChange: {
       type: Schema.Types.ObjectId,
       ref: 'Book',
+      required: true,
     },
-    BookToReceive: {
+    bookToReceive: {
       type: Schema.Types.ObjectId,
       ref: 'Book',
+      required: true,
     },
+    booksToChange: [{ type: Schema.Types.ObjectId, ref: 'Book' }],
     chat: [
       {
         sender: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -21,7 +26,7 @@ const MatchSchema = new Schema(
         timeSent: { type: Date, required: true },
       },
     ],
-    status: { type: String, required: true }, // pending / exchanged / rejected
+    status: { type: String, required: true, default: 'pending' }, // pending / exchanged / rejected
   },
   {
     versionKey: false,
