@@ -22,9 +22,9 @@ const MatchSchema = new Schema(
         sender: { type: Schema.Types.ObjectId, ref: 'User' },
         message: {
           type: String,
-          required: true,
+          required: false,
         },
-        timeSent: { type: Date, required: true },
+        timeSent: { type: Date, required: false },
       },
     ],
     status: { type: String, required: true }, // pending / exchanged / rejected
