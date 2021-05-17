@@ -4,9 +4,8 @@ exports.webSocket = (io) => {
   io.on('connection', (socket) => {
     console.log(`👍 connected to ${socket.id}`);
 
-    // data: {username}
-    socket.on('typing', (data) => {
-      socket.broadcast.emit('typing', data);
+    socket.on('typing', (user, text) => {
+      socket.broadcast.emit('typing', user, text);
     });
 
     // message: {sender: username, date : new Date() , content: text, matchId}
