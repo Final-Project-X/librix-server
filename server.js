@@ -3,19 +3,16 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-
-const socket = require('socket.io');
 const { webSocket } = require('./socket/socketio.js');
+const cookieParser = require('cookie-parser');
+const booksRouter = require('./routes/booksRouter');
+const usersRouter = require('./routes/usersRouter');
+const matchesRouter = require('./routes/matchesRouter');
+const socket = require('socket.io');
 
 const server = app.listen(PORT, () => {
   console.log(`👍 Backend Server started at http://localhost:${PORT}`);
 });
-
-//Connect to Db
-require('./helpers/db-connect');
-
-app.use(express.static('public'));
 
 const io = socket(server, {
   cors: {
@@ -23,6 +20,9 @@ const io = socket(server, {
     origin: '*',
   },
 });
+
+//Connect to Db
+require('./helpers/db-connect');
 
 webSocket(io);
 
@@ -40,6 +40,10 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use('/books', booksRouter);
+app.use('/users', usersRouter);
+app.use('/matches', matchesRouter);
 
 //ERROR HANDLING
 app.use(function errorHandler(err, req, res, next) {

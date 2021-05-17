@@ -3,13 +3,19 @@ const { Schema, model } = mongoose;
 
 const MatchSchema = new Schema(
   {
+
     bookOne: {
+
       type: Schema.Types.ObjectId,
       ref: 'Book',
+      required: true,
     },
+
     bookTwo: {
+
       type: Schema.Types.ObjectId,
       ref: 'Book',
+      required: true,
     },
     chat: [
       {
@@ -21,7 +27,7 @@ const MatchSchema = new Schema(
         timeSent: { type: Date, required: false },
       },
     ],
-    status: { type: String, required: true }, // pending / exchanged / rejected
+    status: { type: String, required: true, default: 'pending' }, // pending / exchanged / rejected
   },
   {
     versionKey: false,
