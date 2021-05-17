@@ -3,17 +3,11 @@ const { Schema, model } = mongoose;
 
 const MatchSchema = new Schema(
   {
-    BooksToChange: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Book',
-      },
-    ],
-    BookToChange: {
+    bookOne: {
       type: Schema.Types.ObjectId,
       ref: 'Book',
     },
-    BookToReceive: {
+    bookTwo: {
       type: Schema.Types.ObjectId,
       ref: 'Book',
     },
@@ -38,3 +32,12 @@ const MatchSchema = new Schema(
 const Match = model('Match', MatchSchema);
 
 module.exports = Match;
+
+//create a possible match
+// check booksToOffer of interested users , if they have the book owner as interested user itself
+//with find match function but logic like
+//* if (book.owner === book.interestedUsers[j].booksToOffer.map((book) =>
+//*     book.interestedUsers.find(owner)
+//*   )
+//OR
+// * let exchangeBook = user.booksToOffer.map((item) => item.interestedUsers.find(book.owner));
