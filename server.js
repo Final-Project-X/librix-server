@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 const booksRouter = require('./routes/booksRouter');
 const usersRouter = require('./routes/usersRouter');
 const matchesRouter = require('./routes/matchesRouter');
-
 const socket = require('socket.io');
 
 const server = app.listen(PORT, () => {
@@ -24,8 +23,6 @@ const io = socket(server, {
 
 //Connect to Db
 require('./helpers/db-connect');
-
-//app.use(express.static('public'));
 
 webSocket(io);
 

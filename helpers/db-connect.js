@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
 
 //MongoDb Connection
 
 const strConn = process.env.MONGO_URI;
+
+//console.log('db connection=>', strConn);
 
 const connectOptions = {
   useNewUrlParser: true,
