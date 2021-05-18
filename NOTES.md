@@ -27,8 +27,8 @@ All user calls start with /users
 
 ### /
 
-**get** => response is an array with the users as objects, this will be deprecated in production of the app
-**post** => expects the following minimal request
+- Add User
+  **post** => expects the following minimal request
 
 ```
 {
@@ -70,8 +70,11 @@ Will recieve the response =>
 
 ### /:id
 
-**get** => response is an the user as an object
-**put** => If the field is made up =>
+- Get User
+  **get** => response is an the user as an object
+
+- Update one/many Fields In A User
+  **put** => If the field is made up =>
 
 ```
 "This": "is not a field"
@@ -96,11 +99,13 @@ Will **not** return an error, just the user as an object not changed in any way.
 }
 ```
 
-**del** => if deleted successfully you will recieve a response of the user as an object, everything else will throw an error.
+- Delete User
+  **del** => if deleted successfully you will recieve a response of the user as an object, everything else will throw an error.
 
 ### /login
 
-**post** => _to be updated_ => expects the following request =>
+- Login User
+  **post** => _to be updated_ => expects the following request =>
 
 ```
 {
@@ -116,8 +121,8 @@ All book calls start with /books
 
 ### /
 
-**get** => to be cleared after testing, responseds with an array of all available book objects
-**post** => expects the following minimal request =>
+- Add Book
+  **post** => expects the following minimal request =>
 
 ```
 {
@@ -198,8 +203,11 @@ you will recieve the following response: an object with "newBook": the book as a
 
 ### /:id
 
-**get** => will recieve a response as the book as an object
-**put** => please refer to user/:id put as it works mostly the same way. If updating an array with the request =>
+- Get Book
+  **get** => will recieve a response as the book as an object
+
+- Update one/many Fields In A Book
+  **put** => please refer to user/:id put as it works mostly the same way. If updating an array with the request =>
 
 ```
 {
@@ -215,11 +223,13 @@ This will change the _whole array_ to be one item, the outcome will be =>
 }
 ```
 
-**del** => The reponse will be the book as an object.
+- Delete Book
+  **del** => The reponse will be the book as an object.
 
 ### /user
 
-**post** => This will happen on swiping to add an interested user. The expected request is the user id and book id =>
+- Add Interested User To Book
+  **post** => This will happen on swiping to add an interested user. The expected request is the user id and book id =>
 
 ```
 {
