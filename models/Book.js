@@ -7,10 +7,10 @@ const BookSchema = new Schema(
     // general book information maybe api
     title: { type: String, required: true },
     subtitle: { type: String, required: false },
-    description: { type: String, required: false },
+    description: { type: String, required: true },
     authors: [{ type: String, required: true }],
     publishedDate: { type: String, required: true },
-    isbn: [{ type: String }],
+    isbn: [{ type: String, required: true }],
     city: { type: String, required: true, default: 'Berlin' },
     pages: { type: Number, required: false },
     // manual upload
