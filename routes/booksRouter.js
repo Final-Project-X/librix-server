@@ -5,13 +5,12 @@ const {
   getBook,
   getUserLibrary,
   getBooks,
-  addBook,
   deleteBook,
   updateBook,
   addInterestedUser,
 } = require('../controllers/bookControllers');
 
-router.route('/').get(getBooks).post(addBook);
+router.route('/').get(getBooks);
 
 router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 

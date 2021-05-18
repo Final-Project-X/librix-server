@@ -4,11 +4,12 @@ const router = express.Router();
 const {
   getMatches,
   getMatch,
-  addMatch,
+  updateMatch,
+  deleteMatch,
 } = require('../controllers/matchControllers');
 
-router.route('/').get(getMatches).post(addMatch);
+router.route('/').get(getMatches);
 
-router.route('/:id').get(getMatch);
+router.route('/:id').get(getMatch).put(updateMatch).delete(deleteMatch);
 
 module.exports = router;
