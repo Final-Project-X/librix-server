@@ -10,7 +10,15 @@ const {
   loginUser,
 } = require('../controllers/userControllers');
 
-router.route('/').get(getUsers).post(addUser);
+const {
+  userValidationRules,
+  userValidationErrorHandling,
+} = require('../middleware/validation');
+
+router
+  .route('/')
+  .get(getUsers)
+  .post(userValidationRules(), userValidationErrorHandling, addUser);
 
 router.route('/:id').get(getUser).put(updateUser).delete(deleteUser);
 
