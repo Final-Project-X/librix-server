@@ -79,17 +79,21 @@ exports.deleteUser = async (req, res, next) => {
 };
 
 exports.loginUser = async (req, res, next) => {
-  // todo : rewrite this login when more functionality is available
-  const { email } = req.body;
+  const { email, password } = req.body;
 
-  try {
-    const userFound = await User.findOne({ email });
-    if (!userFound) {
-      next(customError(`User with email: ${email} does not exist`, 400));
-      return;
-    }
-    res.json(userFound);
-  } catch (err) {
-    next(err);
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    next(customError('User with given email not found!', 400));
+    return;
   }
+
+  let pwMatch = user.password === password;
+
+  if (!pwMatch) {
+    next(customError('Passwords do not match', 400));
+    return;
+  }
+
+  res.send(user);
 };
