@@ -111,7 +111,6 @@ _Notes_ => If there is an error in any of the functions we return =>
   ```
 
   Will **not** return an error, just the **UserObject** not changed in any way. If you try and change a field that is a _Mongoose ID_, you will recieve an error.
-
   _Backend Response_ => **UserObject**
   _Notes_ => The fields changed will be shown straight away in the response.
 
@@ -158,7 +157,6 @@ _Notes_ => If there is an error in any of the functions we return =>
   ```
 
   _Notes_ => This is the minimal request required => The city field will default to berlin
-
   _Backend Response_ =>
 
   ```
@@ -238,7 +236,6 @@ _Notes_ => If there is an error in any of the functions we return =>
   ```
 
   Will **not** return an error, just the **BookObject** not changed in any way. If you try and change a field that is a _Mongoose ID_, you will recieve an error.
-
   _Backend Response_ => **BookObject**
   _Notes_ => The fields changed will be shown straight away in the response
 
@@ -251,18 +248,15 @@ _Notes_ => If there is an error in any of the functions we return =>
 - Add Interested User To Book
   **post**
   _Frontend Request_ =>
-
   ```
   {
     "userId": "mongoose id",
     "bookId": "mongoose id"
   }
   ```
-
-  _Notes_ => This will happen on swiping to add an interested user.
-
+  _Notes_ => This will happen when the user swipes that they like a book.
   _Backend Response_ => **BookObject**
-  _Notes_ => currently in the process of making a middleware that can stop the duplication of interested user, however right now you can add the same user to a book multiple times.
+  _Notes_ => Currently in the process of making a middleware that can stop the duplication of interested user, however right now you can add the same user to a book multiple times.
 
 ### /books/user/:city
 
