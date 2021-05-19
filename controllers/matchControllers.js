@@ -108,8 +108,8 @@ exports.addMatch = async (req, res, next) => {
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
-      next(err);
     }
+    next(err);
   }
 };
 
@@ -121,6 +121,7 @@ exports.updateMatch = async (req, res, next) => {
 
     if (!match) {
       next(customError(`Match with ID: ${id} does not exist`, 400));
+      return;
     }
 
     Object.assign(match, req.body);
@@ -155,7 +156,8 @@ exports.deleteMatch = async (req, res, next) => {
     await User.findByIdAndUpdate(match.bookTwo.owner, {
       $pull: { matches: match._id },
     });
-    match.delete();
+
+    await match.delete();
     res.json(match);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {

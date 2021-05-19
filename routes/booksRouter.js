@@ -6,11 +6,12 @@ const {
   getUserLibrary,
   getBooks,
   deleteBook,
+  addBook,
   updateBook,
   addInterestedUser,
 } = require('../controllers/bookControllers');
 
-router.route('/').get(getBooks);
+router.route('/').get(getBooks).post(addBook);
 
 router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 
