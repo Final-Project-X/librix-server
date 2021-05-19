@@ -147,7 +147,7 @@ _Notes_ => If there is an error in any of the functions we return =>
     "description": "description",
     "authors": ["author"],
     "publishedDate": Number,
-    "isbn": ["isbn"],
+    "isbn": ["number"],
     "pages": Number,
     "shape": "shape",
     "category": ["category"],
@@ -165,7 +165,7 @@ _Notes_ => If there is an error in any of the functions we return =>
       "authors": [
         "J. K. Rowling"
       ],
-      "isbn": [],
+      "isbn": ["number"],
       "city": "Berlin",
       "category": [
         "fantasy"
