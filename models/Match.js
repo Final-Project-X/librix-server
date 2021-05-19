@@ -3,16 +3,12 @@ const { Schema, model } = mongoose;
 
 const MatchSchema = new Schema(
   {
-
     bookOne: {
-
       type: Schema.Types.ObjectId,
       ref: 'Book',
       required: true,
     },
-
     bookTwo: {
-
       type: Schema.Types.ObjectId,
       ref: 'Book',
       required: true,

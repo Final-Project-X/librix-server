@@ -77,21 +77,23 @@ exports.addMatch = async (req, res, next) => {
 
   try {
     const createMatch = async (data) => {
-      let newMatch = await Match.create(req.body)
+      let newMatch = await Match.create(data);
+      let match = await Match.findOne(newMatch._id)
         .populate('bookOne')
         .populate('bookTwo');
 
-      await User.findByIdAndUpdate(bookOne.owner, {
-        $push: { matches: newMatch._id },
+      await User.findByIdAndUpdate(match.bookOne.owner, {
+        $push: { matches: match._id },
       });
-      await User.findByIdAndUpdate(bookTwo.owner, {
-        $push: { matches: newMatch._id },
+      await User.findByIdAndUpdate(match.bookTwo.owner, {
+        $push: { matches: match._id },
       });
 
       res.json(newMatch);
     };
 
     if (user.matches.length < 1) {
+      console.log('this runs');
       createMatch(req.body);
     } else {
       // check if matches contain these books already = true/false
