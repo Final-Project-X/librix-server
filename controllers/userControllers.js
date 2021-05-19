@@ -97,9 +97,6 @@ exports.loginUser = async (req, res, next) => {
 
     res.json(user);
   } catch (err) {
-    if (err instanceof mongoose.Error.CastError) {
-      next(customError(`ID: ${id} is not valid`, 400));
-    }
     next(err);
   }
 };
