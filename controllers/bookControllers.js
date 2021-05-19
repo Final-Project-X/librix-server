@@ -9,7 +9,7 @@ exports.getBook = async (req, res, next) => {
     let book = await Book.findById(id);
     // id is a valid mongoose id
     if (!book) {
-      next(customError(`Book with ID: ${id} does not exist`, 400));
+      return next(customError(`Book with ID: ${id} does not exist`, 400));
     }
     res.json(book);
   } catch (err) {
@@ -32,7 +32,7 @@ exports.getUserLibrary = async (req, res, next) => {
     if (userLibrary.length === 0) {
       next(
         customError(
-          `There are no book available to trade in this city: ${city}`,
+          `There are no books available to trade in this city: ${city}`,
           400
         )
       );
@@ -52,6 +52,7 @@ exports.getBooks = async (req, res) => {
   res.json(books);
 };
 
+//to your BooksToOffer
 exports.addBook = async (req, res, next) => {
   //todo: create middleware to check the req.body
   const bookData = req.body;
@@ -109,7 +110,7 @@ exports.addInterestedUser = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
   if (!userId || !bookId) {
-    next(customError('A user ID and a book ID must be provided', 400));
+    return next(customError('A user ID and a book ID must be provided', 400));
   }
 
   try {
@@ -120,7 +121,32 @@ exports.addInterestedUser = async (req, res, next) => {
         new: true,
       }
     );
+    await User.findByIdAndUpdate(userId, {
+      $push: { booksInterestedIn: bookId },
+    });
     res.json(updatedInterestedUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.addBooksToRemember = async (req, res, next) => {
+  const { userId, bookId } = req.body;
+
+  if (!userId || !bookId) {
+    return next(customError('A user ID and a book ID must be provided', 400));
+  }
+  try {
+    let updateBookToRememberInUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: { booksToRemember: bookId },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updateBookToRememberInUser);
   } catch (err) {
     next(err);
   }

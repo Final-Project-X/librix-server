@@ -80,20 +80,23 @@ exports.deleteUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
+  try {
+    let user = await User.findOne({ email });
 
-  let user = await User.findOne({ email });
+    console.log(user);
 
-  if (!user) {
-    next(customError('User with given email not found!', 400));
-    return;
+    if (!user) {
+      return next(customError('User with given email not found!', 400));
+    }
+
+    let pwMatch = user.password === password;
+
+    if (!pwMatch) {
+      return next(customError('Passwords do not match', 400));
+    }
+
+    res.json(user);
+  } catch (err) {
+    next(err);
   }
-
-  let pwMatch = user.password === password;
-
-  if (!pwMatch) {
-    next(customError('Passwords do not match', 400));
-    return;
-  }
-
-  res.send(user);
 };

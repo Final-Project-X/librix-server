@@ -22,13 +22,13 @@ router
   .get(getUsers)
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
+router.route('/login').post(loginUser);
+
 router
   .route('/:id')
   .get(getUser)
   .put(updateUser)
   .delete(deleteUser)
   .post(addMatch);
-
-router.route('/login').post(loginUser);
 
 module.exports = router;
