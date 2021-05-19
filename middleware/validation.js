@@ -1,6 +1,7 @@
 const { body, validationResult } = require('express-validator');
 const customError = require('../helpers/customErrorHandler');
 
+// check user information before adding
 exports.userValidationRules = () => {
   return [
     body('email')
