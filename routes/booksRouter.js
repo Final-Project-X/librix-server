@@ -13,10 +13,10 @@ const {
 
 router.route('/').get(getBooks).post(addBook);
 
-router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
-
 router.route('/user').post(addInterestedUser);
 
 router.route('/user/:city').get(getUserLibrary);
+
+router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 
 module.exports = router;

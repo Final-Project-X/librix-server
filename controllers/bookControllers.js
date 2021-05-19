@@ -9,7 +9,7 @@ exports.getBook = async (req, res, next) => {
     let book = await Book.findById(id);
     // id is a valid mongoose id
     if (!book) {
-      next(customError(`Book with ID: ${id} does not exist`, 400));
+      return next(customError(`Book with ID: ${id} does not exist`, 400));
     }
     res.json(book);
   } catch (err) {
@@ -32,7 +32,7 @@ exports.getUserLibrary = async (req, res, next) => {
     if (userLibrary.length === 0) {
       next(
         customError(
-          `There are no book available to trade in this city: ${city}`,
+          `There are no books available to trade in this city: ${city}`,
           400
         )
       );
@@ -120,6 +120,9 @@ exports.addInterestedUser = async (req, res, next) => {
         new: true,
       }
     );
+    await User.findByIdAndUpdate(userId, {
+      $push: { booksInterestedIn: bookId },
+    });
     res.json(updatedInterestedUser);
   } catch (err) {
     next(err);
