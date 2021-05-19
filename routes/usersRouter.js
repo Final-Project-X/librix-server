@@ -10,6 +10,8 @@ const {
   loginUser,
 } = require('../controllers/userControllers');
 
+const { addMatch } = require('../controllers/matchControllers');
+
 const {
   userValidationRules,
   userValidationErrorHandling,
@@ -20,7 +22,12 @@ router
   .get(getUsers)
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
-router.route('/:id').get(getUser).put(updateUser).delete(deleteUser);
+router
+  .route('/:id')
+  .get(getUser)
+  .put(updateUser)
+  .delete(deleteUser)
+  .post(addMatch);
 
 router.route('/login').post(loginUser);
 
