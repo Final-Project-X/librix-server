@@ -10,9 +10,16 @@ const {
   loginUser,
 } = require('../controllers/userControllers');
 
+const { addMatch } = require('../controllers/matchControllers');
+
 router.route('/').get(getUsers).post(addUser);
 
-router.route('/:id').get(getUser).put(updateUser).delete(deleteUser);
+router
+  .route('/:id')
+  .get(getUser)
+  .put(updateUser)
+  .delete(deleteUser)
+  .post(addMatch);
 
 router.route('/login').post(loginUser);
 
