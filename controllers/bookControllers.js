@@ -72,14 +72,17 @@ exports.addBook = async (req, res, next) => {
 
 exports.updateBook = async (req, res, next) => {
   //todo : create middle ware to check req.body is okay
-  const bookData = req.body;
   const { id } = req.params;
 
   try {
-    const updatedBook = await Book.findByIdAndUpdate(id, bookData, {
-      new: true,
-    });
-    res.json(updatedBook);
+    let book = await Book.findById(id);
+    if (!book) {
+      next(customError(`Book with ID: ${id} does not exist`, 400));
+      return;
+    }
+    Object.assign(book, req.body);
+    const bookUpdated = await book.save();
+    res.json(bookUpdated);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`Book with ID ${id} does not exist`, 400));
