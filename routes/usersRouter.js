@@ -12,7 +12,15 @@ const {
 
 const { addMatch } = require('../controllers/matchControllers');
 
-router.route('/').get(getUsers).post(addUser);
+const {
+  userValidationRules,
+  userValidationErrorHandling,
+} = require('../middleware/validation');
+
+router
+  .route('/')
+  .get(getUsers)
+  .post(userValidationRules(), userValidationErrorHandling, addUser);
 
 router
   .route('/:id')

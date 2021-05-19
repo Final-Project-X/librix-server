@@ -59,12 +59,12 @@ exports.addBook = async (req, res, next) => {
 
   try {
     let newBook = await Book.create(bookData);
-    let addBookToUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       owner,
       { $push: { booksToOffer: newBook._id } },
       { new: true }
     );
-    res.json({ newBook, addBookToUser });
+    res.json(newBook);
   } catch (err) {
     next(err);
   }
