@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Book = require('../models/Book');
+const Match = require('../models/Match');
 const mongoose = require('mongoose');
 const customError = require('../helpers/customErrorHandler');
 
@@ -13,7 +15,7 @@ exports.getUser = async (req, res, next) => {
     let user = await User.findById(id);
     // id is a valid mongoose id
     if (!user) {
-      next(customError(`User with ID: ${id} does not exist`, 400));
+      return next(customError(`User with ID: ${id} does not exist`, 400));
     }
     res.json(user);
   } catch (err) {
@@ -60,16 +62,73 @@ exports.addUser = async (req, res, next) => {
   }
 };
 
+// delete user and all data an connections with hin
 exports.deleteUser = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    let userDeleted = await User.findByIdAndDelete(id);
-    if (!userDeleted) {
-      next(customError(`User with ID: ${id} does not exist`, 400));
-      return;
+    let userToDelete = await User.findById(id)
+      .populate('booksToOffer')
+      .populate('matches')
+      .populate('booksInterestedIn');
+
+    if (!userToDelete) {
+      return next(customError(`User with ID: ${id} does not exist`, 400));
     }
-    res.json(userDeleted);
+
+    // if no matches just delete books and connections
+    if (userToDelete.matches.length < 1) {
+      await Book.deleteMany({ owner: userToDelete._id });
+
+      await Book.updateMany(
+        { _id: userToDelete.booksInterestedIn },
+        {
+          $pull: { interestedUsers: userToDelete._id },
+        }
+      );
+
+      await userToDelete.delete();
+      res.json(userToDelete);
+    }
+
+    // if matches delete matches first in both users and itself
+    for (let i = 0; i < userToDelete.matches.length; i++) {
+      const match = await Match.findById(userToDelete.matches[i])
+        .populate('bookOne')
+        .populate('bookTwo');
+      console.log(match);
+
+      if (!match) {
+        return next(
+          customError(
+            `Match with ID: ${userToDelete.matches[i]} does not exist`,
+            400
+          )
+        );
+      }
+
+      await User.findByIdAndUpdate(match.bookOne.owner, {
+        $pull: { matches: match._id },
+      });
+      await User.findByIdAndUpdate(match.bookTwo.owner, {
+        $pull: { matches: match._id },
+      });
+
+      await match.delete();
+    }
+
+    // delete Users Books
+    await Book.deleteMany({ owner: userToDelete._id });
+
+    await Book.updateMany(
+      { _id: userToDelete.booksInterestedIn },
+      {
+        $pull: { interestedUsers: userToDelete._id },
+      }
+    );
+
+    await userToDelete.delete();
+    res.json(userToDelete._id);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
