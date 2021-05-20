@@ -82,17 +82,11 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
     let users = [];
     for (let i = 0; i < 6; i++) {
       let user = await User.create({
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName(),
         username: faker.internet.userName(),
         email: faker.internet.email(),
         password: 'Test123!',
         avatar: faker.internet.avatar(),
-        address: {
-          street: faker.address.streetAddress(),
-          zipcode: faker.address.zipCode(),
-          city: 'Berlin',
-        },
+        city: 'Berlin',
         points: 0,
       });
       users.push(user);
@@ -144,8 +138,8 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
           bookObj.volumeInfo.industryIdentifiers[1].identifier,
         ],
         pages: bookObj.volumeInfo.pageCount,
-        shape: 'as good as new',
-        category: bookObj.volumeInfo.categories,
+        condition: 'as good as new',
+        category: 'i am a catergory ',
         reserved: false,
         owner: faker.random.arrayElement(userIds),
       });
