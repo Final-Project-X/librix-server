@@ -31,53 +31,18 @@ exports.getMatch = async (req, res, next) => {
   }
 };
 
-//ADD A MATCH AND CHECK IF ALL WORKS OUT
-//Todo put some of the validation tests in middleware
 exports.addMatch = async (req, res, next) => {
-  const { bookOne, bookTwo } = req.body;
-  const { id } = req.params;
-  const user = await User.findById(id).populate('matches');
-
-  if (!user) {
-    next(customError(`User with ID: ${id} does not exist`, 400));
-    return;
-  }
-
-  // same Id with same id = will most likely not happen
-  const areBooksTheSame = bookOne === bookTwo;
-  if (areBooksTheSame) {
-    next(customError(`book one and book two are the same`, 400));
-    return;
-  }
-
-  // check if user owns one book and is interested in one book
-  const userIsInterestedInBook =
-    user.booksInterestedIn.includes(bookOne) ||
-    user.booksInterestedIn.includes(bookTwo);
-
-  const userOffersBook =
-    user.booksToOffer.includes(bookOne) || user.booksToOffer.includes(bookTwo);
-
-  if (!userIsInterestedInBook || !userOffersBook) {
-    next(customError(`Match is not valid`, 400));
-    return;
-  }
-
-  const checkIfMatchExists = () => {
-    for (userMatch in user.matches) {
-      if (
-        userMatch.bookOne === (bookOne || bookTwo) &&
-        userMatch.bookTwo === (bookOne || bookTwo)
-      )
-        console.log('books already matched');
-      return true;
-    }
-    return false;
-  };
+  const { bookOne, matchBooks } = req.body;
+  //console.log('body =>', req.body);
 
   try {
-    const createMatch = async (data) => {
-      let newMatch = await Match.create(data);
+    let matchesArray = [];
+    for (let i = 0; i < matchBooks.length; i++) {
+      let newMatch = await Match.create({
+        bookOne: bookOne,
+        bookTwo: matchBooks[i]._id,
+      });
+      matchesArray.push(newMatch._id);
       let match = await Match.findOne(newMatch._id)
         .populate('bookOne')
         .populate('bookTwo');
@@ -88,25 +53,9 @@ exports.addMatch = async (req, res, next) => {
       await User.findByIdAndUpdate(match.bookTwo.owner, {
         $push: { matches: match._id },
       });
-
-      res.json(newMatch);
-    };
-
-    if (user.matches.length < 1) {
-      console.log('this runs');
-      createMatch(req.body);
-    } else {
-      // check if matches contain these books already = true/false
-
-      console.log('does match exist?', checkIfMatchExists());
-
-      if (checkIfMatchExists()) {
-        next(customError(`Books already matched`, 400));
-        return;
-      } else {
-        createMatch(req.body);
-      }
     }
+    console.log(`stored ${matchesArray.length} matches `);
+    res.json(matchesArray.length);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));

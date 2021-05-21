@@ -114,7 +114,7 @@ exports.addInterestedUser = async (req, res, next) => {
   }
 
   try {
-    let updatedInterestedUser = await Book.findByIdAndUpdate(
+    await Book.findByIdAndUpdate(
       bookId,
       { $push: { interestedUsers: userId } },
       {
@@ -124,7 +124,7 @@ exports.addInterestedUser = async (req, res, next) => {
     await User.findByIdAndUpdate(userId, {
       $push: { booksInterestedIn: bookId },
     });
-    res.json(updatedInterestedUser);
+    next();
   } catch (err) {
     next(err);
   }
