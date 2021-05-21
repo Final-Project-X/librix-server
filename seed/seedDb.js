@@ -113,7 +113,7 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
       9781426205187,
       9783741612404,
       9780786965601,
-      9780553573404,
+      //9780553573404,
     ];
 
     let books = [];
@@ -125,6 +125,8 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
       //console.log('ℹ️ calling new book with api =>', googleApi);
       const response = await data.json();
       const bookObj = response.items[0];
+
+      //console.log(bookObj.volumeInfo);
 
       let book = await Book.create({
         title: bookObj.volumeInfo.title,
@@ -216,7 +218,7 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
       // console.log('❓ any matches for this book???');
 
       if (book.interestedUsers.length < 1)
-        console.log('😔 no interested users in book:');
+        console.log('😔 no interested users in book');
 
       for (let j = 0; j < book.interestedUsers.length; j++) {
         let isMatch = await findMatch(book.interestedUsers[j], book.owner);
