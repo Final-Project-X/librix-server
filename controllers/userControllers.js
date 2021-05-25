@@ -3,6 +3,7 @@ const Book = require('../models/Book');
 const Match = require('../models/Match');
 const mongoose = require('mongoose');
 const customError = require('../helpers/customErrorHandler');
+const customResponse = require('../helpers/customResponseHandler');
 
 exports.getUsers = async (req, res) => {
   let users = await User.find();
@@ -129,7 +130,9 @@ exports.deleteUser = async (req, res, next) => {
     );
 
     await userToDelete.delete();
-    res.json(userToDelete._id);
+    res.json(
+      customResponse(`User ${userToDelete.username} is deleted`, 'confirmation')
+    );
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
@@ -159,4 +162,15 @@ exports.loginUser = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+//--------------------------------------------------------
+// nee to be checked after deploy, auth and set cookies
+exports.logoutUser = async (req, res, next) => {
+  res.clearCookie('token', {
+    sameSite: process.env.NODE_ENV == 'production' ? 'None' : 'lax',
+    secure: process.env.NODE_ENV == 'production' ? true : false, //http on localhost, https on production
+    httpOnly: true,
+  }); // clear the cookie in the browser
+  res.json(customResponse(`Logged out successfully!`, 'confirmation'));
 };
