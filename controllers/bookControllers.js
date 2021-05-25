@@ -138,15 +138,16 @@ exports.addBookToSavedBooks = async (req, res, next) => {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
   try {
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        $push: { booksToRemember: bookId },
-      },
-      {
-        new: true,
-      }
-    );
+    let user = await User.findById(userId);
+
+    if (user.booksToRemember.includes(bookId)) {
+      return next(customError('Book is already saved', 400));
+    }
+
+    await user.update({
+      $push: { booksToRemember: bookId },
+    });
+
     res.json(customResponse(`Book is saved`, 'confirmation'));
   } catch (err) {
     next(err);
@@ -166,7 +167,7 @@ exports.deleteBookFromSavedBooks = async (req, res, next) => {
         $pull: { booksToRemember: bookId },
       },
       {
-        new: true,
+        new: true, // could be deleted cause we are not sending it
       }
     );
     res.json(
