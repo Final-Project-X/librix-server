@@ -13,6 +13,7 @@ const BookSchema = new Schema(
     isbn: [{ type: String, required: true }],
     city: { type: String, required: true, default: 'Berlin' },
     pages: { type: Number, required: false },
+    personalDescription: { type: String, required: false },
     // manual upload
     condition: { type: String, required: true },
     category: { type: String, required: true },
