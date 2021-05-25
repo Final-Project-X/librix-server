@@ -1,7 +1,7 @@
 const customError = require('../helpers/customErrorHandler');
 const Book = require('../models/Book');
 
-exports.isInterestedUser = async (req, res, next) => {
+exports.isUserAlreadyInterestedInBook = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
   if (!userId || !bookId) {
@@ -9,13 +9,10 @@ exports.isInterestedUser = async (req, res, next) => {
   }
 
   const book = await Book.findById(bookId);
-  console.log(book);
 
   const interestedUserArray = book.interestedUsers.filter(
     (id) => id.toString() === userId.toString()
   );
-
-  console.log(interestedUserArray);
 
   if (interestedUserArray.length > 0) {
     return next(

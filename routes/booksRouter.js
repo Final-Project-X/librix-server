@@ -11,7 +11,9 @@ const {
   addInterestedUser,
   addBooksToRemember,
 } = require('../controllers/bookControllers');
-const { isInterestedUser } = require('../middleware/isInterestedUser');
+const {
+  isUserAlreadyInterestedInBook,
+} = require('../middleware/isUserAlreadyInterestedInBook');
 const { isMatch } = require('../middleware/isMatch');
 const { addMatch } = require('../controllers/matchControllers');
 
@@ -20,7 +22,7 @@ router.route('/savedBooks').post(addBooksToRemember);
 
 router
   .route('/user')
-  .post(isInterestedUser, addInterestedUser, isMatch, addMatch);
+  .post(isUserAlreadyInterestedInBook, addInterestedUser, isMatch, addMatch);
 
 router.route('/user/:city').get(getUserLibrary);
 
