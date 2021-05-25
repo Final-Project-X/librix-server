@@ -152,3 +152,27 @@ exports.addBookToSavedBooks = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deleteBookFromSavedBooks = async (req, res, next) => {
+  const { userId, bookId } = req.body;
+
+  if (!userId || !bookId) {
+    return next(customError('A user ID and a book ID must be provided', 400));
+  }
+  try {
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { booksToRemember: bookId },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(
+      customResponse(`Book is deleted from Saved Books`, 'confirmation')
+    );
+  } catch (err) {
+    next(err);
+  }
+};
