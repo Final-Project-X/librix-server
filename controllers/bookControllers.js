@@ -109,10 +109,6 @@ exports.deleteBook = async (req, res, next) => {
 exports.addInterestedUser = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
-  if (!userId || !bookId) {
-    return next(customError('A user ID and a book ID must be provided', 400));
-  }
-
   try {
     await Book.findByIdAndUpdate(
       bookId,
