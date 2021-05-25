@@ -1,6 +1,7 @@
 const Match = require('../models/Match');
 const User = require('../models/User');
 const customError = require('../helpers/customErrorHandler');
+const customResponse = require('../helpers/customResponseHandler');
 const mongoose = require('mongoose');
 
 // just for checking reason
@@ -55,7 +56,9 @@ exports.addMatch = async (req, res, next) => {
       });
     }
     console.log(`stored ${matchesArray.length} matches `);
-    res.json(matchesArray.length);
+    res.json(
+      customResponse(`You got ${matchesArray.length} matches`, 'confirmation')
+    );
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));

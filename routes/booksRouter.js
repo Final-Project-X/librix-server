@@ -9,13 +9,13 @@ const {
   addBook,
   updateBook,
   addInterestedUser,
-  addBooksToRemember,
+  addBookToSavedBooks,
 } = require('../controllers/bookControllers');
 const { isMatch } = require('../middleware/isMatch');
 const { addMatch } = require('../controllers/matchControllers');
 
 router.route('/').get(getBooks).post(addBook);
-router.route('/savedBooks').post(addBooksToRemember);
+router.route('/savedBooks').post(addBookToSavedBooks);
 
 router.route('/user').post(addInterestedUser, isMatch, addMatch);
 
