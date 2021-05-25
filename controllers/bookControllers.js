@@ -1,6 +1,7 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
 const customError = require('../helpers/customErrorHandler');
+const customResponse = require('../helpers/customResponseHandler');
 const mongoose = require('mongoose');
 
 exports.getBook = async (req, res, next) => {
@@ -130,14 +131,14 @@ exports.addInterestedUser = async (req, res, next) => {
   }
 };
 
-exports.addBooksToRemember = async (req, res, next) => {
+exports.addBookToSavedBooks = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
   if (!userId || !bookId) {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
   try {
-    let updateBookToRememberInUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       userId,
       {
         $push: { booksToRemember: bookId },
@@ -146,7 +147,7 @@ exports.addBooksToRemember = async (req, res, next) => {
         new: true,
       }
     );
-    res.json(updateBookToRememberInUser);
+    res.json(customResponse(`Book is saved`, 'confirmation'));
   } catch (err) {
     next(err);
   }
