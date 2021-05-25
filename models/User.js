@@ -4,6 +4,7 @@ const { Schema, model } = mongoose;
 const UserSchema = new Schema(
   {
     username: { type: String, required: true },
+    aboutMe: String,
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     avatar: { type: String, required: false, default: '/statics/01.png' },

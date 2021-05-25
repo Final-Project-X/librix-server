@@ -17,7 +17,8 @@ exports.getUser = async (req, res, next) => {
     if (!user) {
       return next(customError(`User with ID: ${id} does not exist`, 400));
     }
-    res.json(user);
+    const { username, aboutMe, city, avatar, points } = user;
+    res.json({ username, aboutMe, city, avatar, points });
   } catch (err) {
     // id is not a valid mongoose id
     if (err instanceof mongoose.Error.CastError) {
