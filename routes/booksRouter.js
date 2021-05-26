@@ -9,7 +9,8 @@ const {
   addBook,
   updateBook,
   addInterestedUser,
-  addBooksToRemember,
+  addBookToSavedBooks,
+  deleteBookFromSavedBooks,
 } = require('../controllers/bookControllers');
 const {
   isUserAlreadyInterestedInBook,
@@ -18,13 +19,16 @@ const { isMatch } = require('../middleware/isMatch');
 const { addMatch } = require('../controllers/matchControllers');
 
 router.route('/').get(getBooks).post(addBook);
-router.route('/savedBooks').post(addBooksToRemember);
+router
+  .route('/savedBooks')
+  .post(addBookToSavedBooks)
+  .delete(deleteBookFromSavedBooks);
 
 router
   .route('/user')
   .post(isUserAlreadyInterestedInBook, addInterestedUser, isMatch, addMatch);
 
-router.route('/user/:city').get(getUserLibrary);
+router.route('/user/:id').post(getUserLibrary);
 
 router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 

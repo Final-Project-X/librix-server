@@ -3,6 +3,7 @@ const Book = require('../models/Book');
 const Match = require('../models/Match');
 const mongoose = require('mongoose');
 const customError = require('../helpers/customErrorHandler');
+const customResponse = require('../helpers/customResponseHandler');
 
 exports.getUsers = async (req, res) => {
   let users = await User.find();
@@ -17,7 +18,8 @@ exports.getUser = async (req, res, next) => {
     if (!user) {
       return next(customError(`User with ID: ${id} does not exist`, 400));
     }
-    res.json(user);
+    const { username, aboutMe, city, avatar, points } = user;
+    res.json({ username, aboutMe, city, avatar, points });
   } catch (err) {
     // id is not a valid mongoose id
     if (err instanceof mongoose.Error.CastError) {
@@ -32,7 +34,12 @@ exports.updateUser = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    let user = await User.findById(id);
+    let user = await User.findById(id)
+      .populate('booksToOffer')
+      .populate('booksToRemember')
+      .populate('booksInterestedIn')
+      .populate('matches');
+
     if (!user) {
       next(customError(`User with ID: ${id} does not exist`, 400));
       return;
@@ -128,7 +135,9 @@ exports.deleteUser = async (req, res, next) => {
     );
 
     await userToDelete.delete();
-    res.json(userToDelete._id);
+    res.json(
+      customResponse(`User ${userToDelete.username} is deleted`, 'confirmation')
+    );
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
@@ -140,7 +149,11 @@ exports.deleteUser = async (req, res, next) => {
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email })
+      .populate('booksToOffer')
+      .populate('booksToRemember')
+      .populate('booksInterestedIn')
+      .populate('matches');
 
     console.log(user);
 
@@ -158,4 +171,15 @@ exports.loginUser = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+//--------------------------------------------------------
+// nee to be checked after deploy, auth and set cookies
+exports.logoutUser = async (req, res, next) => {
+  res.clearCookie('token', {
+    sameSite: process.env.NODE_ENV == 'production' ? 'None' : 'lax',
+    secure: process.env.NODE_ENV == 'production' ? true : false, //http on localhost, https on production
+    httpOnly: true,
+  }); // clear the cookie in the browser
+  res.json(customResponse(`Logged out successfully!`, 'confirmation'));
 };

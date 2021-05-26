@@ -140,8 +140,9 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
           bookObj.volumeInfo.industryIdentifiers[1].identifier,
         ],
         pages: bookObj.volumeInfo.pageCount,
+        genre: 'genre',
+        language: 'de',
         condition: 'as good as new',
-        category: 'i am a catergory ',
         reserved: false,
         owner: faker.random.arrayElement(userIds),
       });
