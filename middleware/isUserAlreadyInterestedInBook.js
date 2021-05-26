@@ -1,5 +1,6 @@
 const customError = require('../helpers/customErrorHandler');
 const Book = require('../models/Book');
+const User = require('../models/User');
 
 exports.isUserAlreadyInterestedInBook = async (req, res, next) => {
   const { userId, bookId } = req.body;

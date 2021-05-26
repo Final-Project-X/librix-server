@@ -27,7 +27,7 @@ exports.getUserLibrary = async (req, res, next) => {
   const { city, genre, language } = req.body;
   const { id } = req.params;
 
-  const user = await User.findById(id).populate('matches');
+  const user = await User.findById(id);
 
   if (!user) {
     return next(customError(`No user with id: ${id} exists`, 400));
