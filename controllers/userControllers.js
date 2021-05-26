@@ -33,7 +33,12 @@ exports.updateUser = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    let user = await User.findById(id);
+    let user = await User.findById(id)
+      .populate('booksToOffer')
+      .populate('booksToRemember')
+      .populate('booksInterestedIn')
+      .populate('matches');
+
     if (!user) {
       next(customError(`User with ID: ${id} does not exist`, 400));
       return;
@@ -141,7 +146,11 @@ exports.deleteUser = async (req, res, next) => {
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email })
+      .populate('booksToOffer')
+      .populate('booksToRemember')
+      .populate('booksInterestedIn')
+      .populate('matches');
 
     console.log(user);
 

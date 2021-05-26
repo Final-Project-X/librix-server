@@ -14,8 +14,8 @@ const BookSchema = new Schema(
     city: { type: String, required: true, default: 'Berlin' },
     pages: { type: Number, required: false },
     // manual upload
-    condition: { type: String, required: true },
-    category: { type: String, required: true },
+    language: { type: String, required: true },
+    genre: { type: String, required: true },
     // Pics
     selectedFiles: [{ type: String, required: true }],
     // availability by default
