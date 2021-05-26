@@ -23,7 +23,7 @@ router
 
 router.route('/user').post(addInterestedUser, isMatch, addMatch);
 
-router.route('/user/:city').get(getUserLibrary);
+router.route('/user/:id').post(getUserLibrary);
 
 router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 

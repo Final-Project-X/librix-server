@@ -15,6 +15,7 @@ const BookSchema = new Schema(
     pages: { type: Number, required: false },
     personalDescription: { type: String, required: false },
     // manual upload
+    language: { type: String, required: true },
     condition: { type: String, required: true },
     genre: { type: String, required: true },
     // Pics
