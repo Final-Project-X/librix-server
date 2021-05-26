@@ -11,7 +11,7 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.getUser = async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.body; // matchPartnerId
   try {
     let user = await User.findById(id);
     // id is a valid mongoose id

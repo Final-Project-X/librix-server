@@ -8,7 +8,9 @@ const {
   deleteMatch,
 } = require('../controllers/matchControllers');
 
-router.route('/').get(getMatches);
+//main route => /matches
+// todo auth
+router.route('/').get(getMatches); // todo delete this get
 
 router.route('/:id').get(getMatch).put(updateMatch).delete(deleteMatch);
 
