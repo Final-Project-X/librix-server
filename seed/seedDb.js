@@ -142,6 +142,7 @@ const findMatch = async (interestedUserInBookId, bookOwnerId) => {
         pages: bookObj.volumeInfo.pageCount,
         genre: 'genre',
         language: 'de',
+        condition: 'as good as new',
         reserved: false,
         owner: faker.random.arrayElement(userIds),
       });
