@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/books', booksRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/matches', matchesRouter);
 
 //ERROR HANDLING
