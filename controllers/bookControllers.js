@@ -1,6 +1,7 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
 const customError = require('../helpers/customErrorHandler');
+const customResponse = require('../helpers/customResponseHandler');
 const mongoose = require('mongoose');
 
 exports.getBook = async (req, res, next) => {
@@ -23,22 +24,60 @@ exports.getBook = async (req, res, next) => {
 };
 
 exports.getUserLibrary = async (req, res, next) => {
-  const { city } = req.params;
-  // todo : check if its an actual city and make sure it starts with a capital letter
-  // todo : check the user has not matched or is not already an interest user of one of the books
+  const { city, genre, language } = req.body;
+  const { id } = req.params;
 
+  const user = await User.findById(id).populate('matches');
+
+  if (!user) {
+    return next(customError(`No user with id: ${id} exists`, 400));
+  }
+
+  if (!city) {
+    city = user.city;
+  }
+
+  // /.*/g => regular expression that means any
   try {
-    let userLibrary = await Book.find().where('city').equals(city);
+    let userLibrary = await Book.find()
+      .where('city')
+      .equals(city.toLowerCase() || /.*/g)
+      .where('genre')
+      .equals(genre || /.*/g)
+      .where('language')
+      .equals(language || /.*/g);
+
     if (userLibrary.length === 0) {
-      next(
+      return next(
         customError(
-          `There are no books available to trade in this city: ${city}`,
+          `There are no books available to trade with these filters.`,
           400
         )
       );
-      return;
     }
-    res.json({ userLibrary });
+
+    const booksToCheck = [
+      ...user.booksToOffer,
+      ...user.booksToRemember,
+      ...user.booksInterestedIn,
+    ];
+
+    const filteredUserLibrary = userLibrary.filter((book) => {
+      let isNotAlreadyAssosiatedWithUser = true;
+
+      for (let i = 0; i < booksToCheck.length; i++) {
+        if (booksToCheck[i].toString() === book._id.toString()) {
+          isNotAlreadyAssosiatedWithUser = false;
+          break;
+        }
+      }
+
+      if (isNotAlreadyAssosiatedWithUser) {
+        return book;
+      }
+    });
+
+    res.json(filteredUserLibrary);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`Book with ID ${id} does not exist`, 400));
@@ -109,12 +148,8 @@ exports.deleteBook = async (req, res, next) => {
 exports.addInterestedUser = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
-  if (!userId || !bookId) {
-    return next(customError('A user ID and a book ID must be provided', 400));
-  }
-
   try {
-    let updatedInterestedUser = await Book.findByIdAndUpdate(
+    await Book.findByIdAndUpdate(
       bookId,
       { $push: { interestedUsers: userId } },
       {
@@ -124,29 +159,54 @@ exports.addInterestedUser = async (req, res, next) => {
     await User.findByIdAndUpdate(userId, {
       $push: { booksInterestedIn: bookId },
     });
-    res.json(updatedInterestedUser);
+    next();
   } catch (err) {
     next(err);
   }
 };
 
-exports.addBooksToRemember = async (req, res, next) => {
+exports.addBookToSavedBooks = async (req, res, next) => {
   const { userId, bookId } = req.body;
 
   if (!userId || !bookId) {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
   try {
-    let updateBookToRememberInUser = await User.findByIdAndUpdate(
+    let user = await User.findById(userId);
+
+    if (user.booksToRemember.includes(bookId)) {
+      return next(customError('Book is already saved', 400));
+    }
+
+    await user.update({
+      $push: { booksToRemember: bookId },
+    });
+
+    res.json(customResponse(`Book is saved`, 'confirmation'));
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteBookFromSavedBooks = async (req, res, next) => {
+  const { userId, bookId } = req.body;
+
+  if (!userId || !bookId) {
+    return next(customError('A user ID and a book ID must be provided', 400));
+  }
+  try {
+    await User.findByIdAndUpdate(
       userId,
       {
-        $push: { booksToRemember: bookId },
+        $pull: { booksToRemember: bookId },
       },
       {
-        new: true,
+        new: true, // could be deleted cause we are not sending it
       }
     );
-    res.json(updateBookToRememberInUser);
+    res.json(
+      customResponse(`Book is deleted from Saved Books`, 'confirmation')
+    );
   } catch (err) {
     next(err);
   }

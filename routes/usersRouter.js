@@ -8,7 +8,15 @@ const {
   addUser,
   deleteUser,
   loginUser,
+  logoutUser,
 } = require('../controllers/userControllers');
+
+const {
+  getUserLibrary,
+  addBookToSavedBooks,
+  deleteBookFromSavedBooks,
+  addInterestedUser,
+} = require('../controllers/bookControllers');
 
 const { addMatch } = require('../controllers/matchControllers');
 
@@ -17,18 +25,30 @@ const {
   userValidationErrorHandling,
 } = require('../middleware/validation');
 
+const { isMatch } = require('../middleware/isMatch');
+
+//MAIN ROUTE => /user
+// todo auth
 router
   .route('/')
-  .get(getUsers)
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
+//TODO delete this route
+router.route('/users').get(getUsers).post(getUser);
+
 router.route('/login').post(loginUser);
+router.route('/logout').post(logoutUser);
+
+router
+  .route('/savedBooks')
+  .post(addBookToSavedBooks)
+  .delete(deleteBookFromSavedBooks);
 
 router
   .route('/:id')
-  .get(getUser)
+  .get(getUserLibrary)
   .put(updateUser)
   .delete(deleteUser)
-  .post(addMatch);
+  .post(addInterestedUser, isMatch, addMatch);
 
 module.exports = router;
