@@ -24,22 +24,60 @@ exports.getBook = async (req, res, next) => {
 };
 
 exports.getUserLibrary = async (req, res, next) => {
-  const { city } = req.params;
-  // todo : check if its an actual city and make sure it starts with a capital letter
-  // todo : check the user has not matched or is not already an interest user of one of the books
+  const { city, genre, language } = req.body;
+  const { id } = req.params;
 
+  const user = await User.findById(id).populate('matches');
+
+  if (!user) {
+    return next(customError(`No user with id: ${id} exists`, 400));
+  }
+
+  if (!city) {
+    city = user.city;
+  }
+
+  // /.*/g => regular expression that means any
   try {
-    let userLibrary = await Book.find().where('city').equals(city);
+    let userLibrary = await Book.find()
+      .where('city')
+      .equals(city.toLowerCase() || /.*/g)
+      .where('genre')
+      .equals(genre || /.*/g)
+      .where('language')
+      .equals(language || /.*/g);
+
     if (userLibrary.length === 0) {
-      next(
+      return next(
         customError(
-          `There are no books available to trade in this city: ${city}`,
+          `There are no books available to trade with these filters.`,
           400
         )
       );
-      return;
     }
-    res.json({ userLibrary });
+
+    const booksToCheck = [
+      ...user.booksToOffer,
+      ...user.booksToRemember,
+      ...user.booksInterestedIn,
+    ];
+
+    const filteredUserLibrary = userLibrary.filter((book) => {
+      let isNotAlreadyAssosiatedWithUser = true;
+
+      for (let i = 0; i < booksToCheck.length; i++) {
+        if (booksToCheck[i].toString() === book._id.toString()) {
+          isNotAlreadyAssosiatedWithUser = false;
+          break;
+        }
+      }
+
+      if (isNotAlreadyAssosiatedWithUser) {
+        return book;
+      }
+    });
+
+    res.json(filteredUserLibrary);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`Book with ID ${id} does not exist`, 400));
@@ -109,10 +147,6 @@ exports.deleteBook = async (req, res, next) => {
 
 exports.addInterestedUser = async (req, res, next) => {
   const { userId, bookId } = req.body;
-
-  if (!userId || !bookId) {
-    return next(customError('A user ID and a book ID must be provided', 400));
-  }
 
   try {
     await Book.findByIdAndUpdate(
