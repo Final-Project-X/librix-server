@@ -2,16 +2,17 @@ const customError = require('../helpers/customErrorHandler');
 const Book = require('../models/Book');
 
 exports.isUserAlreadyInterestedInBook = async (req, res, next) => {
-  const { userId, bookId } = req.body;
+  const { bookId } = req.body;
+  const { id } = req.params;
 
-  if (!userId || !bookId) {
+  if (!id || !bookId) {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
 
   const book = await Book.findById(bookId);
 
   const interestedUserArray = book.interestedUsers.filter(
-    (id) => id.toString() === userId.toString()
+    (id) => id.toString() === id.toString()
   );
 
   if (interestedUserArray.length > 0) {

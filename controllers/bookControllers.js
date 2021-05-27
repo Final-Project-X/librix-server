@@ -24,7 +24,7 @@ exports.getBook = async (req, res, next) => {
 };
 
 exports.getUserLibrary = async (req, res, next) => {
-  const { city, genre, language } = req.body;
+  let { city, genre, language } = req.body;
   const { id } = req.params;
 
   const user = await User.findById(id).populate('matches');
@@ -41,7 +41,7 @@ exports.getUserLibrary = async (req, res, next) => {
   try {
     let userLibrary = await Book.find()
       .where('city')
-      .equals(city.toLowerCase() || /.*/g)
+      .equals(city.toLowerCase())
       .where('genre')
       .equals(genre || /.*/g)
       .where('language')
@@ -146,17 +146,18 @@ exports.deleteBook = async (req, res, next) => {
 };
 
 exports.addInterestedUser = async (req, res, next) => {
-  const { userId, bookId } = req.body;
+  const { bookId } = req.body;
+  const {id} = req.params;
 
   try {
     await Book.findByIdAndUpdate(
       bookId,
-      { $push: { interestedUsers: userId } },
+      { $push: { interestedUsers: id } },
       {
         new: true,
       }
     );
-    await User.findByIdAndUpdate(userId, {
+    await User.findByIdAndUpdate(id, {
       $push: { booksInterestedIn: bookId },
     });
     next();
@@ -173,6 +174,12 @@ exports.addBookToSavedBooks = async (req, res, next) => {
   }
   try {
     let user = await User.findById(userId);
+
+    if (!user) {
+      return next(
+        customError(`The user with id: ${userId} does not exists`, 400)
+      );
+    }
 
     if (user.booksToRemember.includes(bookId)) {
       return next(customError('Book is already saved', 400));
@@ -194,6 +201,22 @@ exports.deleteBookFromSavedBooks = async (req, res, next) => {
   if (!userId || !bookId) {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return next(customError(`User with id: ${userId} does not exist`, 400));
+  }
+
+  if (!user.booksToRemember.includes(bookId)) {
+    return next(
+      customError(
+        `Book with id: ${bookId} is not found in this users saved books`,
+        400
+      )
+    );
+  }
+
   try {
     await User.findByIdAndUpdate(
       userId,

@@ -6,7 +6,8 @@ Running locally is set to port 5000.
 
 - [Layout](#layout)
 - [Errors](#errors)
-- [Users](#users)
+- [CustomResponse](#CustomResponse)
+- [User](#user)
 - [Books](#books)
 - [Matches](#matches)
 
@@ -43,9 +44,20 @@ _Notes_ => If there is an error in any of the functions we return =>
 
 ---
 
-## Users
+## CustomResponse
 
-### /users/
+_Notes_ => If we call custom response in any of the functions we return =>
+
+```
+{
+  "type": "type",
+  "msg": "message"
+}
+```
+
+## User
+
+### /user/
 
 - Add User
   **post**
@@ -54,11 +66,9 @@ _Notes_ => If there is an error in any of the functions we return =>
   ```
   {
     "username": "username",
-    "email": "email@email.com",
-    "password": "password",
-    "address": {
-      "city": "city"
-    }
+    "email": "email@email.com", => must be valid email
+    "password": "Password!123", => must contain lower, upper, speical and number characters
+    "city": "city"
   }
   ```
 
@@ -66,12 +76,8 @@ _Notes_ => If there is an error in any of the functions we return =>
 
   ```
   {
-    "firstName": "firstName",
-    "lastName": "lastName",
+    "aboutMe": "aboutMe",
     "avatar": "avatar",
-    "address": {
-      "country": "country"
-    }
   }
   ```
 
@@ -85,21 +91,43 @@ _Notes_ => If there is an error in any of the functions we return =>
     "booksToRemember": [],
     "booksInterestedIn": [],
     "matches": [],
-    "_id": "60a38261cb726721a8101086",
+    "_id": "60ae313b8883eca526f8dce7",
     "username": "username",
     "email": "email@email.com",
-    "address": {
-      "country": "Germany",
-      "city": "city"
-    },
-    "createdAt": "2021-05-18T09:01:21.791Z",
-    "updatedAt": "2021-05-18T09:01:21.791Z"
+    "city": "city",
+    "createdAt": "2021-05-26T11:30:03.755Z",
+    "updatedAt": "2021-05-26T11:30:03.755Z"
   }
   ```
 
   _Notes_ => This was based on the minimal request => This response will be refered to in future as **UserObject**
 
-### /users/login
+### /user/users
+
+- Get other users profile information
+  **post**
+  _Frontend Request_ =>
+
+  ```
+  {
+    "id": "mongoose id of other user"
+  }
+  ```
+
+  _Backend Response_ =>
+
+  ```
+  {
+    "username": "username",
+    "city": "city",
+    "avatar": "https://cdn.fakercloud.com/avatars/ernestsemerda_128.jpg",
+    "points": 0
+  }
+  ```
+
+  _Notes_ => if there is an about me filled in, it will return as well
+
+### /user/login
 
 - Login User
   **post**
@@ -113,12 +141,64 @@ _Notes_ => If there is an error in any of the functions we return =>
   ```
 
   _Backend Response_ => **UserObject**
+  _Notes_ => all fields will be populated in the response
 
-### /users/:id
+### /user/logout
 
-- Get User
+- Logout User
   **get**
-  _Backend Response_ => **UserObject**
+  _Backend Response_ => **CustomResponse**
+
+### /user/addSavedBook
+
+- Save a book for your later consideration
+  **post**
+  _Frontend Request_ =>
+
+  ```
+  {
+    "userId": "your user mongoose id",
+    "bookId": "their book mongoose id"
+  }
+  ```
+
+  _Notes_ => This will happen when the user swipes to save a book for later.
+  _Backend Response_ => **BookObject**
+
+### /user/removeSavedBook
+
+- Remove a book from your saved books
+  **post**
+  _Frontend Request_ =>
+
+  ```
+  {
+    "userId": "your user mongoose id",
+    "bookId": "their book mongoose id"
+  }
+  ```
+
+  _Backend Response_ => **CustomResponse**
+
+### /library/:id
+
+- Get Library For User To swipe
+  **post**
+  _Frontend Request_ =>
+
+  ```
+  {
+    "city": "city",
+    "genre": "genre",
+    "language": "language"
+  }
+  ```
+
+  _Notes_ => the minimal request is an empty object, just the city will be taken from the users information in that case
+  _Backend Response_ => An array of **BookObject** (see below for BookObject reference).
+  _Notes_ => If the array is empty this will return an error.
+
+### /:id
 
 - Update one/many Fields In A User
   **put**
@@ -133,11 +213,11 @@ _Notes_ => If there is an error in any of the functions we return =>
 
   Will **not** return an error, just the **UserObject** not changed in any way. If you try and change a field that is a _Mongoose ID_, you will recieve an error.
   _Backend Response_ => **UserObject**
-  _Notes_ => The fields changed will be shown straight away in the response.
+  _Notes_ => The fields changed will be shown straight away in the response. => we populate all the fields in the response
 
 - Delete User
   **del**
-  _Backend Response_ => **UserObject**
+  _Backend Response_ => **CustomeResponse**
 
 - Add a match
   **post**
@@ -150,19 +230,7 @@ _Notes_ => If there is an error in any of the functions we return =>
   }
   ```
 
-  _Backend Response_ =>
-
-  ```
-  {
-    "status": "pending",
-    "_id": "mongoose id",
-    "bookOne": "mongoose id",
-    "bookTwo": "mongoose id",
-    "chat": [],
-    "createdAt": "2021-05-19T12:04:20.084Z",
-    "updatedAt": "2021-05-19T13:19:02.152Z"
-  }
-  ```
+  _Backend Response_ => **CustomResponse**
 
 ---
 
@@ -230,21 +298,6 @@ _Notes_ => If there is an error in any of the functions we return =>
 
 ### /books/savedBooks
 
-- Add a book to your books to remember
-  **post**
-  _Frontend Request_ =>
-
-  ```
-  {
-    "userId": "mongoose id",
-    "bookId": "mongoose id"
-  }
-  ```
-
-  _Notes_ => This will happen when the user swipes to save a book for later.
-  _Backend Response_ => **BookObject**
-  _Notes_ => Currently in the process of making a middleware that can stop the duplication of saved books, however right now you can save the same user to a book multiple times.
-
 ### /books/:id
 
 - Get Book
@@ -286,11 +339,6 @@ _Notes_ => If there is an error in any of the functions we return =>
   _Notes_ => Currently in the process of making a middleware that can stop the duplication of interested user, however right now you can add the same user to a book multiple times.
 
 ### /books/user/:city
-
-- Get Library For User To swipe
-  **get**
-  _Backend Response_ => An object containing the key "userLibrary", which holds an array of **BookObject**.
-  _Notes_ => If the array is empty (there are no cities) this will return an error.
 
 ---
 

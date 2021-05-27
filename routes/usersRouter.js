@@ -25,6 +25,10 @@ const {
   userValidationErrorHandling,
 } = require('../middleware/validation');
 
+const {
+  isUserAlreadyInterestedInBook,
+} = require('../middleware/isUserAlreadyInterestedInBook');
+
 const { isMatch } = require('../middleware/isMatch');
 
 //MAIN ROUTE => /user
@@ -33,22 +37,24 @@ router
   .route('/')
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
-//TODO delete this route
+//TODO delete get users
 router.route('/users').get(getUsers).post(getUser);
 
 router.route('/login').post(loginUser);
-router.route('/logout').post(logoutUser);
 
-router
-  .route('/savedBooks')
-  .post(addBookToSavedBooks)
-  .delete(deleteBookFromSavedBooks);
+router.route('/logout').get(logoutUser);
+
+router.route('/addSavedBook').post(addBookToSavedBooks);
+
+router.route('/removeSavedBook').post(deleteBookFromSavedBooks);
 
 router
   .route('/:id')
-  .get(getUserLibrary)
   .put(updateUser)
   .delete(deleteUser)
-  .post(addInterestedUser, isMatch, addMatch);
+  .post(isUserAlreadyInterestedInBook, addInterestedUser, isMatch, addMatch);
+
+// get user library is a post call
+router.route('/library/:id').post(getUserLibrary);
 
 module.exports = router;

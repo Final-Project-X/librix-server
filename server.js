@@ -27,13 +27,7 @@ require('./helpers/db-connect');
 webSocket(io);
 
 //Middleware
-app.use(express.json());
-app.use(
-  cors({
-    origin: 'http://localhost:3000', // frontend URL should be configurable => //* later to do
-    credentials: true, // allow cookies to be sent from frontend to us
-  })
-);
+app.use(express.json({ limit: '400KB' }));
 app.use(cookieParser());
 
 //ROUTES;

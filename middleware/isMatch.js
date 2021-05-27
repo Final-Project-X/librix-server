@@ -3,15 +3,15 @@ const User = require('../models/User');
 const Book = require('../models/Book');
 
 exports.isMatch = async (req, res, next) => {
-  const { userId, bookId } = req.body;
+  const { bookId } = req.body;
+  const { id } = req.params;
   const matchBooks = [];
-  //  console.log('this is the body of is match!!', req.body);
 
   try {
-    const user = await User.findById(userId).populate('matches'); // chrissi
+    const user = await User.findById(id).populate('matches'); // chrissi
 
     if (!user) {
-      return next(customError(`User with ID: ${userId} does not exist`, 400));
+      return next(customError(`User with ID: ${id} does not exist`, 400));
     }
 
     //check if bookOneId.owner(luke ) is in user.booksToOffer.interestedUsers (chrissis books)
@@ -31,8 +31,6 @@ exports.isMatch = async (req, res, next) => {
         approve = false;
         console.log('No BookTwo. Added interested user but no match created.');
       }
-
-      console.log(`bookTwoOwner: ${bookTwo.owner} and userId ${user._id}`);
 
       if (bookTwo.owner.toString() !== user._id.toString()) {
         approve = false;
@@ -54,10 +52,6 @@ exports.isMatch = async (req, res, next) => {
       }
 
       const checkIfMatchExists = (data) => {
-        console.log(
-          `====> ${data.bookOne.toString()}, ${data.bookTwo.toString()} ,${bookId} ,${bookTwo._id.toString()}`
-        );
-
         if (
           (data.bookOne.toString() === bookId ||
             data.bookOne.toString() === bookTwo._id.toString()) &&
