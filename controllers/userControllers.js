@@ -95,7 +95,12 @@ exports.deleteUser = async (req, res, next) => {
       );
 
       await userToDelete.delete();
-      res.json(userToDelete);
+      res.json(
+        customResponse(
+          `User ${userToDelete.username} is deleted`,
+          'confirmation'
+        )
+      );
     }
 
     // if matches delete matches first in both users and itself
@@ -103,7 +108,6 @@ exports.deleteUser = async (req, res, next) => {
       const match = await Match.findById(userToDelete.matches[i])
         .populate('bookOne')
         .populate('bookTwo');
-      console.log(match);
 
       if (!match) {
         return next(
@@ -154,8 +158,6 @@ exports.loginUser = async (req, res, next) => {
       .populate('booksToRemember')
       .populate('booksInterestedIn')
       .populate('matches');
-
-    console.log(user);
 
     if (!user) {
       return next(customError('User with given email not found!', 400));
