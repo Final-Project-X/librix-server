@@ -95,12 +95,7 @@ exports.deleteUser = async (req, res, next) => {
       );
 
       await userToDelete.delete();
-      res.json(
-        customResponse(
-          `User ${userToDelete.username} is deleted`,
-          'confirmation'
-        )
-      );
+      res.json(customResponse(`User ${userToDelete.username} is deleted`));
     }
 
     // if matches delete matches first in both users and itself
@@ -139,9 +134,7 @@ exports.deleteUser = async (req, res, next) => {
     );
 
     await userToDelete.delete();
-    res.json(
-      customResponse(`User ${userToDelete.username} is deleted`, 'confirmation')
-    );
+    res.json(customResponse(`User ${userToDelete.username} is deleted`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
@@ -183,5 +176,5 @@ exports.logoutUser = async (req, res, next) => {
     secure: process.env.NODE_ENV == 'production' ? true : false, //http on localhost, https on production
     httpOnly: true,
   }); // clear the cookie in the browser
-  res.json(customResponse(`Logged out successfully!`, 'confirmation'));
+  res.json(customResponse(`Logged out successfully!`));
 };

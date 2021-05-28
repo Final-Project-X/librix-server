@@ -1,7 +1,8 @@
-const customResponse = (message, note = 'response') => {
+const customResponse = (message) => {
   let notification = {
-    type: note,
-    msg: message,
+    response: {
+      message: message,
+    },
   };
   return notification;
 };
