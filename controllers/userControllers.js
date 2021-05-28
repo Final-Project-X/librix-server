@@ -10,7 +10,7 @@ exports.getUsers = async (req, res) => {
   res.json(users);
 };
 
-exports.getUser = async (req, res, next) => {
+exports.getMatchPartner = async (req, res, next) => {
   const { id } = req.body; // matchPartnerId
   try {
     let user = await User.findById(id);
@@ -30,7 +30,6 @@ exports.getUser = async (req, res, next) => {
 };
 
 exports.updateUser = async (req, res, next) => {
-  // todo : check the req.body to see if the information is good and there is a change
   const { id } = req.params;
 
   try {
@@ -57,7 +56,7 @@ exports.updateUser = async (req, res, next) => {
 
 //method for signing up the user
 exports.addUser = async (req, res, next) => {
-  // todo : check req.body is the right information
+  // todo : check req.body is the right information in implementing the sanitastion / authentification
   const userData = req.body;
 
   try {

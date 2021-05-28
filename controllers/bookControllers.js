@@ -33,15 +33,15 @@ exports.getUserLibrary = async (req, res, next) => {
     return next(customError(`No user with id: ${id} exists`, 400));
   }
 
-  if (!city) {
-    city = user.city;
+  if (city) {
+    city = city.toLowerCase();
   }
 
   // /.*/g => regular expression that means any
   try {
     let userLibrary = await Book.find()
       .where('city')
-      .equals(city.toLowerCase())
+      .equals(city || /.*/g)
       .where('genre')
       .equals(genre || /.*/g)
       .where('language')
@@ -93,7 +93,7 @@ exports.getBooks = async (req, res) => {
 
 //to your BooksToOffer
 exports.addBook = async (req, res, next) => {
-  //todo: create middleware to check the req.body
+  //todo: create middleware to check the req.body -> add bookSanitize?
   const bookData = req.body;
   const { owner } = req.body;
 
@@ -111,7 +111,6 @@ exports.addBook = async (req, res, next) => {
 };
 
 exports.updateBook = async (req, res, next) => {
-  //todo : create middle ware to check req.body is okay
   const { id } = req.params;
 
   try {
@@ -135,8 +134,31 @@ exports.deleteBook = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    let deletedBook = await Book.findByIdAndDelete(id);
-    res.json(deletedBook);
+    let bookToDelete = await Book.findById(id);
+
+    let user = await User.findById(bookToDelete.owner).populate('matches');
+
+    const isBookInUserMatches = user.matches.filter(
+      (match) =>
+        match.bookOne.toString() === bookToDelete._id.toString() ||
+        match.bookTwo.toString() === bookToDelete._id.toString()
+    );
+
+    if (isBookInUserMatches.length !== 0) {
+      return res.json(
+        customResponse('Your Book still has Matches, please delete them first.')
+      );
+    }
+
+    bookToDelete.interestedUsers.map(
+      async (user) =>
+        await User.findByIdAndUpdate(user, {
+          $pull: { booksInterestedIn: bookToDelete._id },
+        })
+    );
+
+    bookToDelete.delete();
+    res.json(customResponse(`Your book has been deleted.`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`Book with ID ${id} does not exist`, 400));
