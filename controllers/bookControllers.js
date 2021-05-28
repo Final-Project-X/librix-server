@@ -157,6 +157,10 @@ exports.deleteBook = async (req, res, next) => {
         })
     );
 
+    user.update({
+      $pull: { booksToOffer: bookToDelete._id },
+    });
+
     bookToDelete.delete();
     res.json(customResponse(`Your book has been deleted.`));
   } catch (err) {
