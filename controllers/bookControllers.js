@@ -147,7 +147,7 @@ exports.deleteBook = async (req, res, next) => {
 
 exports.addInterestedUser = async (req, res, next) => {
   const { bookId } = req.body;
-  const {id} = req.params;
+  const { id } = req.params;
 
   try {
     await Book.findByIdAndUpdate(
@@ -189,7 +189,7 @@ exports.addBookToSavedBooks = async (req, res, next) => {
       $push: { booksToRemember: bookId },
     });
 
-    res.json(customResponse(`Book is saved`, 'confirmation'));
+    res.json(customResponse(`Book is saved`));
   } catch (err) {
     next(err);
   }
@@ -227,9 +227,7 @@ exports.deleteBookFromSavedBooks = async (req, res, next) => {
         new: true, // could be deleted cause we are not sending it
       }
     );
-    res.json(
-      customResponse(`Book is deleted from Saved Books`, 'confirmation')
-    );
+    res.json(customResponse(`Book is deleted from Saved Books`));
   } catch (err) {
     next(err);
   }
