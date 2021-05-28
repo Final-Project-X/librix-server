@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  getUser,
   getUsers,
   updateUser,
   addUser,
   deleteUser,
   loginUser,
   logoutUser,
+  getMatchPartner,
 } = require('../controllers/userControllers');
 
 const {
@@ -38,7 +38,7 @@ router
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
 //TODO delete get users
-router.route('/users').get(getUsers).post(getUser);
+router.route('/users').get(getUsers).post(getMatchPartner);
 
 router.route('/login').post(loginUser);
 
