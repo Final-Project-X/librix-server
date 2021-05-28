@@ -136,7 +136,7 @@ exports.deleteUser = async (req, res, next) => {
     res.json(customResponse(`User ${userToDelete.username} is deleted`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      next(customErro(`ID: ${id} is not valid`, 400));
+      next(customError(`ID: ${id} is not valid`, 400));
     }
     next(err);
   }
