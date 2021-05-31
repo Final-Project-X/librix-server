@@ -29,6 +29,39 @@ exports.getMatchPartner = async (req, res, next) => {
   }
 };
 
+exports.getUserMatches = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    let user = await User.findById(id);
+
+    if (!user) {
+      return next(customError(`User with ID: ${id} does not exist`, 400));
+    }
+
+    if (user.matches.length < 1) {
+      return res.json(customResponse(`User ${user.username} has no matches`));
+    }
+
+    let userMatches = [];
+
+    for (let i = 0; i < user.matches.length; i++) {
+      let match = await Match.findById(user.matches[i])
+        .populate('bookOne')
+        .populate('bookTwo');
+
+      userMatches.push(match);
+    }
+
+    res.json(userMatches);
+  } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      next(customError(`ID: ${id} is not valid`, 400));
+    }
+    next(err);
+  }
+};
+
 exports.updateUser = async (req, res, next) => {
   const { id } = req.params;
 

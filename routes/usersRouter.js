@@ -9,6 +9,7 @@ const {
   loginUser,
   logoutUser,
   getMatchPartner,
+  getUserMatches,
 } = require('../controllers/userControllers');
 
 const {
@@ -50,6 +51,7 @@ router.route('/removeSavedBook').post(deleteBookFromSavedBooks);
 
 router
   .route('/:id')
+  .get(getUserMatches)
   .put(updateUser)
   .delete(deleteUser)
   .post(isUserAlreadyInterestedInBook, addInterestedUser, isMatch, addMatch);
