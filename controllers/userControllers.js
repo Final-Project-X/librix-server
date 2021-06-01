@@ -76,6 +76,7 @@ exports.updateUser = async (req, res, next) => {
       next(customError(`User with ID: ${id} does not exist`, 400));
       return;
     }
+
     Object.assign(user, req.body);
     const userUpdated = await user.save();
     res.json(userUpdated);
@@ -205,10 +206,15 @@ exports.loginUser = async (req, res, next) => {
 //--------------------------------------------------------
 // nee to be checked after deploy, auth and set cookies
 exports.logoutUser = async (req, res, next) => {
-  res.clearCookie('token', {
-    sameSite: process.env.NODE_ENV == 'production' ? 'None' : 'lax',
-    secure: process.env.NODE_ENV == 'production' ? true : false, //http on localhost, https on production
-    httpOnly: true,
-  }); // clear the cookie in the browser
+  //todo check with frontend if these work
+  //res.clearCookie('token', {
+  //  sameSite: process.env.NODE_ENV == 'production' ? 'None' : 'lax',
+  //  secure: process.env.NODE_ENV == 'production' ? true : false, //http on localhost, https on production
+  //  httpOnly: true,
+  //}); // clear the cookie in the browser
+
+  delete req.headers['auth'];
+  console.log(req.headers); // remove the headers so auth will not work
+
   res.json(customResponse(`Logged out successfully!`));
 };
