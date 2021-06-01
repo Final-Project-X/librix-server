@@ -31,15 +31,16 @@ exports.validateBook = (req, res, next) => {
     book.genre &&
     book.condition &&
     book.selectedFiles
-  )
+  ) {
     next();
-  else {
+  } else {
     return next(
-          customError(
-            `Your book has missing information mate, please check the data again.`,
-            400
-          ))
-   
+      customError(
+        `Your book has missing information mate, please check the data again.`,
+        400
+      )
+    );
+  }
 };
 
 // check user information before adding
