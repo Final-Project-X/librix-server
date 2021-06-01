@@ -34,10 +34,12 @@ exports.validateBook = (req, res, next) => {
   )
     next();
   else {
-    const error = new Error(`Your book has missing information`);
-    error.status = 400;
-    next(error);
-  }
+    return next(
+          customError(
+            `Your book has missing information mate, please check the data again.`,
+            400
+          ))
+   
 };
 
 // check user information before adding
