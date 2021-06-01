@@ -9,9 +9,11 @@ const {
   updateBook,
 } = require('../controllers/bookControllers');
 
+const { validateBook } = require('../middleware/validation');
+
 //main route => /books
 // todo auth, delete get books
-router.route('/').get(getBooks).post(addBook);
+router.route('/').get(getBooks).post(validateBook, addBook);
 
 router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
 
