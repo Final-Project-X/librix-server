@@ -9,10 +9,16 @@ const {
   updateBook,
 } = require('../controllers/bookControllers');
 
-//main route => /books
-// todo auth, delete get books
-router.route('/').get(getBooks).post(addBook);
+const { auth } = require('../middleware/auth');
 
-router.route('/:id').get(getBook).put(updateBook).delete(deleteBook);
+//main route => /books
+// todo delete get books
+router.route('/').get(getBooks).post(auth, addBook);
+
+router
+  .route('/:id')
+  .get(auth, getBook)
+  .put(auth, updateBook)
+  .delete(auth, deleteBook);
 
 module.exports = router;

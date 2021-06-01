@@ -89,13 +89,14 @@ exports.updateUser = async (req, res, next) => {
 
 //method for signing up the user
 exports.addUser = async (req, res, next) => {
-  // todo : check req.body is the right information in implementing the sanitastion / authentification
   const userData = req.body;
 
   try {
-    let user = new User(userData);
+    const user = new User(userData);
+    user.hashPassword();
     await user.save();
-    res.json(user);
+    const token = user.generateToken();
+    res.json({ user, token });
   } catch (err) {
     next(err);
   }
@@ -188,13 +189,14 @@ exports.loginUser = async (req, res, next) => {
       return next(customError('User with given email not found!', 400));
     }
 
-    let pwMatch = user.password === password;
+    let pwMatch = user.comparePasswords(password);
 
     if (!pwMatch) {
       return next(customError('Passwords do not match', 400));
     }
 
-    res.json(user);
+    const token = user.generateToken();
+    res.send({ user, token });
   } catch (err) {
     next(err);
   }
