@@ -64,6 +64,6 @@ router
   );
 
 // get user library is a post call
-router.route('/library/:id').post(getUserLibrary);
+router.route('/library/:id').post(auth, getUserLibrary);
 
 module.exports = router;
