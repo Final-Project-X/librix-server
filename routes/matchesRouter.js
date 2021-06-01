@@ -8,10 +8,15 @@ const {
   deleteMatch,
 } = require('../controllers/matchControllers');
 
-//main route => /matches
-// todo auth
-router.route('/').get(getMatches); // todo delete this get
+const { auth } = require('../middleware/auth');
 
-router.route('/:id').get(getMatch).put(updateMatch).delete(deleteMatch);
+//main route => /matches
+router.route('/').get(getMatches);
+
+router
+  .route('/:id')
+  .get(auth, getMatch)
+  .put(auth, updateMatch)
+  .delete(auth, deleteMatch);
 
 module.exports = router;
