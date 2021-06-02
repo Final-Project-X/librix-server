@@ -6,12 +6,13 @@ const {
   getMatch,
   updateMatch,
   deleteMatch,
+  deleteAfterExchange,
 } = require('../controllers/matchControllers');
 
 const { auth } = require('../middleware/auth');
 
 //main route => /matches
-router.route('/').get(getMatches);
+router.route('/').get(getMatches).post(deleteAfterExchange);
 
 router
   .route('/:id')

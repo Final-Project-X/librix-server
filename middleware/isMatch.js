@@ -84,7 +84,7 @@ exports.isMatch = async (req, res, next) => {
     console.log('matchbooks:', matchBooks);
     if (matchBooks.length < 1)
       return res.json(
-        '💔 no match - match exists. Added interested user but no match created.'
+        '💔 no match. Added user to interested user but no match created.'
       );
 
     const bookOne = bookId;

@@ -179,9 +179,6 @@ exports.addInterestedUser = async (req, res, next) => {
     await Book.findByIdAndUpdate(
       bookId,
       { $push: { interestedUsers: id } },
-      {
-        new: true,
-      }
     );
     await User.findByIdAndUpdate(id, {
       $push: { booksInterestedIn: bookId },
