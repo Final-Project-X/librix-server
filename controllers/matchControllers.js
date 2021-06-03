@@ -1,9 +1,9 @@
 const Match = require('../models/Match');
 const User = require('../models/User');
+const Book = require('../models/Book');
 const customError = require('../helpers/customErrorHandler');
 const customResponse = require('../helpers/customResponseHandler');
 const mongoose = require('mongoose');
-const Book = require('../models/Book');
 
 // just for checking reason
 exports.getMatches = async (req, res, next) => {
@@ -133,6 +133,24 @@ exports.deleteMatch = async (req, res, next) => {
 };
 
 //! todo controller update bookStatus to reserved and matchstatus book to reserved (matchId, bookId)
+
+exports.updateBookAndMatchStatus = async (req, res, next) => {
+  const matchId = req.params;
+  const { bookId } = req.body;
+
+  if (!matchId || !bookId)
+    return next(customError('why did you not include these things!', 400));
+
+  try {
+    await Book.findByIdAndUpdate(bookId, {
+      resvered: true,
+    });
+
+    const match = await Match.findById(matchId);
+  } catch (err) {
+    next(err);
+  }
+};
 
 //delete all after status is exchanged
 exports.deleteAfterExchange = async (req, res, next) => {
