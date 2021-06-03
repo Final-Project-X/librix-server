@@ -132,6 +132,8 @@ exports.deleteMatch = async (req, res, next) => {
   }
 };
 
+//! todo controller update bookStatus to reserved and matchstatus book to reserved (matchId, bookId)
+
 //delete all after status is exchanged
 exports.deleteAfterExchange = async (req, res, next) => {
   const { id } = req.body;
@@ -141,6 +143,19 @@ exports.deleteAfterExchange = async (req, res, next) => {
 
     if (!match) {
       return next(customError(`Match with ID: ${id} does not exist`, 400));
+    }
+
+    //! toDo check if Status is exchanged of both books
+    if (
+      match.bookOneStatus !== 'exchanged' ||
+      match.bookTwoStatus !== 'exchanged'
+    ) {
+      return next(
+        customError(
+          `BookOne and BookTwo stati need to be set to exchanged`,
+          400
+        )
+      );
     }
 
     //get Books
