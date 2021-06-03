@@ -9,15 +9,11 @@ const {
   deleteAfterExchange,
 } = require('../controllers/matchControllers');
 
-const { auth } = require('../middleware/auth');
+//const { auth } = require('../middleware/auth');
 
 //main route => /matches
 router.route('/').get(getMatches).post(deleteAfterExchange);
 
-router
-  .route('/:id')
-  .get(auth, getMatch)
-  .put(auth, updateMatch)
-  .delete(auth, deleteMatch);
+router.route('/:id').get(getMatch).put(updateMatch).delete(deleteMatch);
 
 module.exports = router;
