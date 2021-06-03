@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Documentation</title>
+  </head>
+  <body>
+    <header>
+      <h1>Librix API</h1>
+      <h2>Give your old books a new home</h2>
+    </header>
+    <div class="container">
+      <nav>
+        <ul>
+          <li><h2>Getting Started</h2></li>
+          <li>Base URL</li>
+          <li>Resources</li>
+        </ul>
+        <ul>
+          <li><h2>User</h2></li>
+          <li>User Schema</li>
+          <li>Add a single user</li>
+          <li>Get information on your match partner</li>
+          <li>Login</li>
+          <li>Logout</li>
+          <li>Add a saved book</li>
+          <li>Remove a saved book</li>
+          <li>Get all your matches</li>
+          <li>Update your profile</li>
+          <li>Delete your profile</li>
+          <li>Show interest in a book</li>
+        </ul>
+      </nav>
+      <main>
+        <section>
+          <h2>Getting Started</h2>
+          <p>
+            You will need to make an accountant to accsess this API. For almost
+            all requests are used based and requires a webtoken in to be set in
+            the headers. Click on this <a href="#">Link</a> and then continue.
+          </p>
+          <h3>Base URL</h3>
+          <p>
+            The base URL for librixs is
+            <a href="#">https://librix-server.herokuapp.com/</a>. After this
+            link is where you will add all further calls.
+          </p>
+          <h3>Resources</h3>
+          <p>We have three main routes:</p>
+          <ul>
+            <li>/user</li>
+            <li>/books</li>
+            <li>/matches</li>
+          </ul>
+          <p>
+            When we dive deeper into each call it is important to know on post
+            requests what must be there, and what can be added. Everything that
+            is light grey in color is not required to get a correct response.
+          </p>
+        </section>
+        <section>
+          <h2>User</h2>
+          <h3>User Schema</h3>
+          <div class="code-container">
+            <code id="user-schema"></code>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

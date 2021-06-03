@@ -1,12 +1,8 @@
 # Librix - Backend
 
----
-
 A REST API built using Node.js, Socket.io and MongoDB.
 
 ## Table of Contents
-
----
 
 - [General](#general)
 - [Setup](#setup)
@@ -14,13 +10,9 @@ A REST API built using Node.js, Socket.io and MongoDB.
 
 ## General
 
----
-
 Librix is a user based book exchange service. We provide a REST API for the storage of users, possible matches and chat intergration.
 
 ## Setup
-
----
 
 Follow these instructions to run this project locally:
 
@@ -34,8 +26,6 @@ $ npm start
 ```
 
 ## Technologies
-
----
 
 A list of technologies used within the project:
 

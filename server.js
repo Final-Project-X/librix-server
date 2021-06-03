@@ -27,12 +27,21 @@ require('./helpers/db-connect');
 webSocket(io);
 
 //Middleware
-app.use(express.json({ limit: '400KB' }));
+app.use(express.json({ limit: '1000KB' }));
 app.use(cookieParser());
+app.use(express.static('public'));
 
 //ROUTES;
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.json({
+    User: 'https://librix-server.herokuapp.com/user',
+    Books: 'https://librix-server.herokuapp.com/books',
+    Matches: 'https://librix-server.herokuapp.com/matches',
+  });
+});
+
+app.use('/documentation', (req, res) => {
+  res.send(express.static('public'));
 });
 
 app.use('/books', booksRouter);
