@@ -21,7 +21,6 @@ exports.isUserAlreadyInterestedInBook = async (req, res, next) => {
       );
     }
     next();
-    //if (interestedUserArray.length > 0) {
   } catch (err) {
     next(err);
   }
