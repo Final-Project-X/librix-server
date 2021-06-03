@@ -167,49 +167,44 @@ exports.deleteAfterExchange = async (req, res, next) => {
         data.bookOne.toString() === bookTwo._id.toString() ||
         data.bookTwo.toString() === bookTwo._id.toString()
     );
-
-    // console.log('matchesWitchBooks', matchesWithBookOne, matchesWithBookTwo);
+    // combine and unify matches
+    let allMatches = [...matchesWithBookOne, ...matchesWithBookTwo];
+    let allMatchesToId = allMatches.map((item) => item._id.toString());
+    let matchesWithBooks = [...new Set(allMatchesToId)];
 
     // delete all matches where the books are in
-    const deleteAllMatchesWithBook = async (matchesWithBook) => {
-      if (matchesWithBook.length === 0) {
-        return console.log('there are no matches with these book');
-      } else {
-        for (let i = 0; i < matchesWithBook.length; i++) {
-          let matchToDelete = await Match.findById(matchesWithBook[i])
-            .populate('bookOne')
-            .populate('bookTwo');
+    if (matchesWithBooks.length == 0) {
+      return console.log('there are no matches with these book');
+    }
 
-          console.log(matchToDelete);
+    for (let i = 0; i < matchesWithBooks.length; i++) {
+      let matchToDelete = await Match.findById(matchesWithBooks[i])
+        .populate('bookOne')
+        .populate('bookTwo');
 
-          await User.findByIdAndUpdate(matchToDelete.bookOne.owner, {
-            $pull: { matches: matchToDelete._id },
-          });
-          await User.findByIdAndUpdate(matchToDelete.bookTwo.owner, {
-            $pull: { matches: matchToDelete._id },
-          });
-          await matchToDelete.delete();
-          console.log('deleted match ', matchToDelete._id);
-        }
+      console.log('matchToDelete', matchToDelete._id);
 
-        return console.log(`deleted ${matchesWithBook.length} Matches`);
-      }
-    };
+      await User.findByIdAndUpdate(matchToDelete.bookOne.owner, {
+        $pull: { matches: matchToDelete._id },
+      });
+      await User.findByIdAndUpdate(matchToDelete.bookTwo.owner, {
+        $pull: { matches: matchToDelete._id },
+      });
+      await matchToDelete.delete();
+      console.log('deleted match ', matchToDelete._id);
+    }
 
-    deleteAllMatchesWithBook(matchesWithBookOne);
-    deleteAllMatchesWithBook(matchesWithBookTwo);
+    console.log(`deleted ${matchesWithBooks.length} Matches`);
 
+    await match.delete();
     // Take book out of all user which are interested in book
+
     bookOne.interestedUsers.map(
       async (user) =>
         await User.findByIdAndUpdate(user, {
           $pull: { booksInterestedIn: bookOne._id },
         })
     );
-
-    bookOne.update({
-      $pull: { interestedUsers: userTwo._id },
-    });
 
     bookTwo.interestedUsers.map(
       async (user) =>
@@ -218,22 +213,26 @@ exports.deleteAfterExchange = async (req, res, next) => {
         })
     );
 
-    bookTwo.update({
+    await bookOne.update({
+      $pull: { interestedUsers: userTwo._id },
+    });
+
+    await bookTwo.update({
       $pull: { interestedUsers: userOne._id },
     });
 
     // delete books in booksToOffer in  users
-    userOne.update({
+    await userOne.update({
       $pull: { booksToOffer: bookOne._id },
     });
 
-    userTwo.update({
+    await userTwo.update({
       $pull: { booksToOffer: bookTwo._id },
     });
 
     // delete books
-    bookOne.delete();
-    bookTwo.delete();
+    await bookOne.delete();
+    await bookTwo.delete();
     res.json(customResponse(`Both Books with all connections are deleted.`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
