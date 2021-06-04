@@ -154,6 +154,10 @@ exports.updateBookAndMatchStatus = async (req, res, next) => {
 
     const match = await Match.findById(id);
 
+    if (!match) {
+      return res.json(customError(`Match with id: ${id} does not exsist`, 400));
+    }
+
     if (match.bookOne.toString() === bookId.toString()) {
       await Match.findByIdAndUpdate(id, {
         bookOneStatus: 'reserved',
