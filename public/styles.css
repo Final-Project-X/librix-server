@@ -29,7 +29,6 @@ body {
     var(--secondary-light)
   );
   width: 100vw;
-  height: 100vh;
   font-size: 1.6rem;
   font-family: Montserrat, Arial, Helvetica, sans-serif;
 }
@@ -53,11 +52,23 @@ nav {
   display: inline-block;
   width: 300px;
   padding: 5px 15px;
-  border: 5px solid white;
+  border-right: 1px solid var(--black-faded);
 }
 
 ul {
   list-style-type: none;
+}
+
+li {
+  transition: 0.2s ease-in-out;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+li:hover {
+  color: var(--primary-dark);
+  transform: translateX(1%);
 }
 
 main {
@@ -80,6 +91,25 @@ footer {
   border: 1px solid var(--white);
   border-radius: 4px;
   background-color: var(--white);
+}
+
+/* nav */
+
+.nav-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  padding: 4px 0;
+}
+
+/* code */
+
+.code {
+  padding: 1px 0 1px 20px;
+}
+
+.code-optional {
+  padding: 1px 0 1px 20px;
+  color: var(--text-faded);
 }
 
 /* 
