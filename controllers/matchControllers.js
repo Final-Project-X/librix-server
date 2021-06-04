@@ -135,18 +135,44 @@ exports.deleteMatch = async (req, res, next) => {
 //! todo controller update bookStatus to reserved and matchstatus book to reserved (matchId, bookId)
 
 exports.updateBookAndMatchStatus = async (req, res, next) => {
-  const matchId = req.params;
+  const { id } = req.params;
   const { bookId } = req.body;
 
-  if (!matchId || !bookId)
+  if (!id || !bookId)
     return next(customError('why did you not include these things!', 400));
 
   try {
-    await Book.findByIdAndUpdate(bookId, {
-      resvered: true,
-    });
+    await Book.findByIdAndUpdate(
+      bookId,
+      {
+        reserved: true,
+      },
+      {
+        new: true,
+      }
+    );
 
-    const match = await Match.findById(matchId);
+    const match = await Match.findById(id);
+
+    if (!match) {
+      return res.json(customError(`Match with id: ${id} does not exsist`, 400));
+    }
+
+    if (match.bookOne.toString() === bookId.toString()) {
+      await Match.findByIdAndUpdate(id, {
+        bookOneStatus: 'reserved',
+      });
+      return res.json(customResponse('Book one status updated'));
+    }
+
+    if (match.bookTwo.toString() === bookId.toString()) {
+      await Match.findByIdAndUpdate(id, {
+        bookTwoStatus: 'reserved',
+      });
+      return res.json(customResponse('Book two status updated'));
+    }
+
+    res.json(customError('Book Id is not valid for this match.', 400));
   } catch (err) {
     next(err);
   }
