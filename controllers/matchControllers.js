@@ -132,8 +132,6 @@ exports.deleteMatch = async (req, res, next) => {
   }
 };
 
-//! todo controller update bookStatus to reserved and matchstatus book to reserved (matchId, bookId)
-
 exports.updateBookAndMatchStatus = async (req, res, next) => {
   const { id } = req.params;
   const { bookId } = req.body;
@@ -155,7 +153,7 @@ exports.updateBookAndMatchStatus = async (req, res, next) => {
     const match = await Match.findById(id);
 
     if (!match) {
-      return res.json(customError(`Match with id: ${id} does not exsist`, 400));
+      return next(customError(`Match with ID: ${id} does not exist`, 400));
     }
 
     if (match.bookOne.toString() === bookId.toString()) {
@@ -180,27 +178,29 @@ exports.updateBookAndMatchStatus = async (req, res, next) => {
 
 //delete all after status is exchanged
 exports.deleteAfterExchange = async (req, res, next) => {
-  const { id } = req.body;
+  const { match } = req.body;
+  // console.log(match);
 
   try {
-    const match = await Match.findById(id);
-
     if (!match) {
-      return next(customError(`Match with ID: ${id} does not exist`, 400));
-    }
-
-    //! toDo check if Status is exchanged of both books
-    if (
-      match.bookOneStatus !== 'exchanged' ||
-      match.bookTwoStatus !== 'exchanged'
-    ) {
       return next(
         customError(
-          `BookOne and BookTwo stati need to be set to exchanged`,
+          `deleteController: Match with ID: ${matchId} does not exist`,
           400
         )
       );
     }
+    if (
+      match.bookOneStatus !== 'received' ||
+      match.bookTwoStatus !== 'received'
+    ) {
+      return res.json(
+        customResponse(
+          `Just one of the books is set to 'received'. Both need to have these status before deleting the data.`
+        )
+      );
+    }
+    console.log('start deleting all the data...');
 
     //get Books
     const bookOne = await Book.findById(match.bookOne);
@@ -272,20 +272,20 @@ exports.deleteAfterExchange = async (req, res, next) => {
         })
     );
 
-    await bookOne.update({
+    await Book.findByIdAndUpdate(bookOne._id, {
       $pull: { interestedUsers: userTwo._id },
     });
 
-    await bookTwo.update({
+    await Book.findByIdAndUpdate(bookTwo._id, {
       $pull: { interestedUsers: userOne._id },
     });
 
     // delete books in booksToOffer in  users
-    await userOne.update({
+    await User.findByIdAndUpdate(userOne._id, {
       $pull: { booksToOffer: bookOne._id },
     });
 
-    await userTwo.update({
+    await User.findByIdAndUpdate(userTwo._id, {
       $pull: { booksToOffer: bookTwo._id },
     });
 

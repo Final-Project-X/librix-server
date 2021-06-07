@@ -10,10 +10,12 @@ const {
   updateBookAndMatchStatus,
 } = require('../controllers/matchControllers');
 
+const { setBookToReceived } = require('../middleware/setBookToReceived');
+
 //const { auth } = require('../middleware/auth');
 
 //main route => /matches
-router.route('/').get(getMatches).post(deleteAfterExchange);
+router.route('/').get(getMatches).post(setBookToReceived, deleteAfterExchange);
 
 router
   .route('/:id')
