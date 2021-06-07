@@ -8,13 +8,13 @@ const MatchSchema = new Schema(
       ref: 'Book',
       required: true,
     },
-    bookOneStatus: { type: String, default: 'pending' }, // pending /reserved / exchanged
+    bookOneStatus: { type: String, default: 'pending' }, // pending /reserved / received
     bookTwo: {
       type: Schema.Types.ObjectId,
       ref: 'Book',
       required: true,
     },
-    bookTwoStatus: { type: String, default: 'pending' }, // pending /reserved / exchanged
+    bookTwoStatus: { type: String, default: 'pending' }, // pending /reserved / received
     chat: [
       {
         sender: { type: Schema.Types.ObjectId, ref: 'User' },
