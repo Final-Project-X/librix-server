@@ -27,18 +27,18 @@ exports.getUserLibrary = async (req, res, next) => {
   let { city, genre, language } = req.body;
   const { id } = req.params;
 
-  const user = await User.findById(id).populate('matches');
-
-  if (!user) {
-    return next(customError(`No user with id: ${id} exists`, 400));
-  }
-
-  if (city) {
-    city = city.toLowerCase();
-  }
-
-  // /.*/g => regular expression that means any
   try {
+    const user = await User.findById(id).populate('matches');
+
+    if (!user) {
+      return next(customError(`No user with id: ${id} exists`, 400));
+    }
+
+    if (city) {
+      city = city.toLowerCase();
+    }
+
+    // /.*/g => regular expression that means any
     let userLibrary = await Book.find()
       .where('city')
       .equals(city || /.*/g)
@@ -80,7 +80,7 @@ exports.getUserLibrary = async (req, res, next) => {
     res.json(filteredUserLibrary);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      next(customError(`Book with ID ${id} does not exist`, 400));
+      next(customError(`User with ID ${id} does not exist`, 400));
     }
     next(err);
   }
@@ -176,10 +176,7 @@ exports.addInterestedUser = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    await Book.findByIdAndUpdate(
-      bookId,
-      { $push: { interestedUsers: id } },
-    );
+    await Book.findByIdAndUpdate(bookId, { $push: { interestedUsers: id } });
     await User.findByIdAndUpdate(id, {
       $push: { booksInterestedIn: bookId },
     });
