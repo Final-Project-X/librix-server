@@ -61,7 +61,8 @@ nav {
   top: 60px;
   padding: 1.5rem;
   border-right: 1px solid rgba(46, 41, 51, 0.08);
-  min-width: 260px;
+  min-width: 220px;
+  max-width: 300px;
   height: calc(100vh - 70px);
   overflow-y: auto;
 }
