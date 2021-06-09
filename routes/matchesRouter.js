@@ -12,16 +12,19 @@ const {
 
 const { setBookToReceived } = require('../middleware/setBookToReceived');
 
-//const { auth } = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 //main route => /matches
-router.route('/').get(getMatches).post(setBookToReceived, deleteAfterExchange);
+router
+  .route('/')
+  .get(getMatches)
+  .post(auth, setBookToReceived, deleteAfterExchange);
 
 router
   .route('/:id')
-  .get(getMatch)
-  .put(updateMatch)
-  .delete(deleteMatch)
-  .post(updateBookAndMatchStatus);
+  .get(auth, getMatch)
+  .put(auth, updateMatch)
+  .delete(auth, deleteMatch)
+  .post(auth, updateBookAndMatchStatus);
 
 module.exports = router;

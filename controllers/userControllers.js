@@ -94,10 +94,10 @@ exports.addUser = async (req, res, next) => {
 
   try {
     const user = new User(userData);
-    //user.hashPassword();
+    user.hashPassword();
     await user.save();
-    //const token = user.generateToken();
-    res.json({ user });
+    const token = user.generateToken();
+    res.json({ user, token });
   } catch (err) {
     next(err);
   }
@@ -190,15 +190,14 @@ exports.loginUser = async (req, res, next) => {
       return next(customError('User with given email not found!', 400));
     }
 
-    //let pwMatch = user.comparePasswords(password);
-    let pwMatch = user.password === password;
+    let pwMatch = user.comparePasswords(password);
 
     if (!pwMatch) {
       return next(customError('Passwords do not match', 400));
     }
 
-    //const token = user.generateToken();
-    res.send({ user });
+    const token = user.generateToken();
+    res.send({ user, token });
   } catch (err) {
     next(err);
   }
@@ -214,8 +213,8 @@ exports.logoutUser = async (req, res, next) => {
   //  httpOnly: true,
   //}); // clear the cookie in the browser
 
-  //delete req.headers['auth'];
-  //console.log(req.headers); // remove the headers so auth will not work
+  delete req.headers['auth'];
+  console.log(req.headers); // remove the headers so auth will not work
 
   res.json(customResponse(`Logged out successfully!`));
 };
