@@ -27,12 +27,13 @@ require('./helpers/db-connect');
 webSocket(io);
 
 //Middleware
-app.use(express.json({ limit: '400KB' }));
+app.use(express.json({ limit: '1000KB' }));
 app.use(cookieParser());
+app.use(express.static('public'));
 
 //ROUTES;
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send(express.static('public'));
 });
 
 app.use('/books', booksRouter);

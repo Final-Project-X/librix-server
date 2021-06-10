@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+:root {
+  font-size: 62.5%;
+
+  /* colors */
+  --primary-dark: #5f41ee;
+  --primary-light: #dbd3ff;
+  --secondary-dark: #ff7d1c;
+  --secondary-light: #faa96c;
+  --neutral-background: #f6f1f1;
+  --white: #ffffff;
+  --black: #000000;
+  --black-faded: #111111;
+  --text-faded: #767676;
+  --error: #b00020;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--neutral-background),
+    var(--secondary-light)
+  );
+  width: 100vw;
+  height: 100vh;
+  font-size: 1.6rem;
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
+}
+
+/* heading */
+
+header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  border-bottom: 1px solid var(--black-faded);
+}
+
+h2 {
+  font-size: 3.2rem;
+  padding: 20px 0;
+  color: var(--primary-dark);
+  text-align: center;
+}
+
+h3 {
+  font-size: 2.6rem;
+  padding: 6px 0;
+}
+
+p {
+  padding: 5px 0;
+}
+
+nav {
+  position: sticky;
+  display: inline-block;
+  top: 60px;
+  padding: 1.5rem;
+  border-right: 1px solid rgba(46, 41, 51, 0.08);
+  min-width: 220px;
+  max-width: 300px;
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  transition: 0.2s ease-in-out;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+li:hover {
+  color: var(--primary-dark);
+  transform: translateX(1%);
+}
+
+a {
+  color: var(--black-faded);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+a:visited {
+  color: inherit;
+}
+
+a:focus {
+  color: var(--primary-dark);
+}
+
+main {
+  display: inline-block;
+  padding: 15px 30px 30px 0;
+  max-width: 800px;
+  margin: 0 auto;
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+
+code {
+  display: block;
+}
+
+/* classes */
+/* containers */
+.flex-container {
+  display: flex;
+}
+
+.logo-container {
+  width: 50px;
+  height: 50px;
+}
+
+.code-container {
+  margin: 10px;
+  padding: 4px 10px;
+  border: 1px solid var(--white);
+  border-radius: 4px;
+  background-color: var(--white);
+}
+
+/* nav */
+
+.nav-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  padding: 4px 0;
+}
+
+/* code */
+
+.code {
+  padding: 1px 0 1px 20px;
+}
+
+.code-inline {
+  display: inline;
+}
+
+.code-optional {
+  padding: 1px 0 1px 20px;
+  color: var(--text-faded);
+}
+
+/* link */
+.link:hover {
+  color: var(--primary-dark);
+}
+
+/* 
+export const shadow = {
+  button: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 13,
+    elevation: 5,
+  },
+  card: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 13,
+    elevation: 5,
+  },
+  image: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 13,
+    // elevation: 5,
+  },
+};
+*/
