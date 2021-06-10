@@ -33,14 +33,6 @@ app.use(express.static('public'));
 
 //ROUTES;
 app.get('/', (req, res) => {
-  res.json({
-    User: 'https://librix-server.herokuapp.com/user',
-    Books: 'https://librix-server.herokuapp.com/books',
-    Matches: 'https://librix-server.herokuapp.com/matches',
-  });
-});
-
-app.use('/documentation', (req, res) => {
   res.send(express.static('public'));
 });
 
