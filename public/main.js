@@ -38,39 +38,35 @@ const codeArrUserOptional = [
 ];
 
 const codeArrBook = [
-  `"username": string,`,
-  `"email": string,`,
-  `"passowrd": string,`,
-  `"city": string,`,
+  `"title": string,`,
+  `"publishedDate": string,`,
+  `"city": string / default Berlin,`,
+  `"language": string,`,
+  `"condition": string,`,
+  `"genre": string,`,
 ];
 
 const codeArrBookOptional = [
-  `"aboutMe": string,`,
-  `"avatar": png / defualt is provided,`,
-  `"points": number / defualt 0,`,
-  `"booksToOffer": [objectIDs],`,
-  `"booksToRemember": [objectIDs],`,
-  `"booksInterestedIn": [objectIDs],`,
-  `"matches": [objectIDs],`,
+  `"subtitle": string,`,
+  `"description": string,`,
+  `"authors": [string],`,
+  `"isbn": [string],`,
+  `"pages": number,`,
+  `"personalDescription": string,`,
+  `"selectedFiles": [string],`,
+  `"reserved": boolean / default false,`,
+  `"owner": objectID,`,
+  `"interestedUsers": [objectIDs],`,
   `"createdAt": date,`,
   `"updatedAt": date`,
 ];
 
-const codeArrMatch = [
-  `"username": string,`,
-  `"email": string,`,
-  `"passowrd": string,`,
-  `"city": string,`,
-];
+const codeArrMatch = [`"bookOne": objectId,`, `"bookTwo": objectId,`];
 
 const codeArrMatchOptional = [
-  `"aboutMe": string,`,
-  `"avatar": png / defualt is provided,`,
-  `"points": number / defualt 0,`,
-  `"booksToOffer": [objectIDs],`,
-  `"booksToRemember": [objectIDs],`,
-  `"booksInterestedIn": [objectIDs],`,
-  `"matches": [objectIDs],`,
+  `"bookOneStatus": string / default pending,`,
+  `"bookTwoStatus": string / default pending,`,
+  `"chat": [objects]`,
   `"createdAt": date,`,
   `"updatedAt": date`,
 ];

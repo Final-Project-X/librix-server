@@ -8,8 +8,8 @@
   </head>
   <body>
     <header>
-      <h1>Librix API</h1>
-      <button>Support Us</button>
+      <h1>Librix API Documentation</h1>
+      <div class="logo-container"><img src="" alt="librix logo" /></div>
     </header>
     <div class="flex-container">
       <nav>
@@ -19,74 +19,376 @@
           </li>
           <li><a href="#base-url">Base URL</a></li>
           <li><a href="#resources">Resources</a></li>
+
+          <!-- user navigation -->
           <li class="nav-title"><a href="#user">User</a></li>
           <li><a href="#user-schema">User schema</a></li>
           <li><a href="#add-a-single-user">Add a single user</a></li>
-          <li>Get information on your match partner</li>
-          <li>Login</li>
-          <li>Logout</li>
-          <li>Add a saved book</li>
-          <li>Remove a saved book</li>
-          <li>Get all your matches</li>
-          <li>Update your profile</li>
-          <li>Delete your profile</li>
-          <li>Show interest in a book</li>
+          <li>
+            <a href="#get-information-on-match-partner"
+              >Get information on your match partner</a
+            >
+          </li>
+          <li><a href="#login">Login</a></li>
+          <li><a href="#logout">Logout</a></li>
+          <li><a href="#add-a-saved-book">Add a saved book</a></li>
+          <li><a href="#remove-a-saved-book">Remove a saved book</a></li>
+          <li><a href="#get-all-your-matches">Get all your matches</a></li>
+          <li><a href="#update-your-profile">Update your profile</a></li>
+          <li><a href="#delete-your-profile">Delete your profile</a></li>
+          <li>
+            <a href="#show-interest-in-a-book">Show interest in a book</a>
+          </li>
+          <li>
+            <a href="#get-the-users-library">Get the users library</a>
+          </li>
+
+          <!-- book navigation -->
           <li class="nav-title"><a href="#books">Books</a></li>
           <li><a href="#book-schema">Book schema</a></li>
-          <li>Add a book</li>
-          <li>Get a single book</li>
-          <li>Update a book</li>
-          <li>Delete a book</li>
+          <li><a href="#add-a-book">Add a book</a></li>
+          <li><a href="#get-a-single-book">Get a single book</a></li>
+          <li><a href="#update-a-book">Update a book</a></li>
+          <li><a href="#delete-a-book">Delete a book</a></li>
+
+          <!-- match navigation -->
           <li class="nav-title"><a href="#matches">Matches</a></li>
           <li><a href="#match-schema">Match schema</a></li>
-          <li>Get a single match</li>
-          <li>Update a match</li>
-          <li>Delete a match</li>
+          <li><a href="#get-a-single-match">Get a single match</a></li>
+          <li><a href="#update-a-match">Update a match</a></li>
+          <li><a href="#delete-a-match">Delete a match</a></li>
         </ul>
       </nav>
       <main>
         <section>
           <h2 id="getting-started">Getting Started</h2>
           <p>
-            You will need to make an accountant to accsess this API. For almost
-            all requests are used based and requires a webtoken in to be set in
-            the headers. Click on this <a href="#">Link</a> and then continue.
+            You will need to make an account to accsess this API. For almost all
+            requests are user based and require a webtoken to be set in the
+            headers.
           </p>
           <h3 id="base-url">Base URL</h3>
           <p>
-            The base URL for librixs is
-            <a href="#">https://librix-server.herokuapp.com/</a>. After this
-            link is where you will add all further calls.
+            The base URL for librix is
+            <a class="link" href="#">https://librix-server.herokuapp.com/</a>.
           </p>
           <h3 id="resources">Resources</h3>
           <p>
-            When we dive deeper into each call it is important to know on post
-            requests what must be there, and what can be added. Everything that
-            is light grey in color is not required to get a correct response.
+            When we dive deeper into each call it is important to know on a post
+            request what is required. Everything that is light grey in color is
+            not required to get a correct response.
+          </p>
+          <p>
+            On each request you will see a route and request type. The base url
+            is omitted in our documnetation but will ne to be added when you
+            make the request.
           </p>
         </section>
+
+        <!-- user section -->
         <section>
           <h2 id="user">User</h2>
+          <p>
+            All user routes start with:
+            <code class="code-inline">BaseURL/user</code>
+          </p>
           <h3 id="user-schema">User Schema</h3>
           <div class="code-container">
             <code id="userSchema"></code>
           </div>
+
+          <!-- add a user -->
           <h3 id="add-a-single-user">Add a single user</h3>
-          <p>To add a single user, insert only the necessary</p>
+          <div class="code-container">
+            <code>Route = /</code>
+            <code>Request = POST</code>
+            <code>Auth = not required</code>
+          </div>
+          <p>
+            To add a single user, insert only the required fields of the user
+            schema. The <code class="code-inline">aboutMe</code> and
+            <code class="code-inline">avatar</code> keys can also be inserted
+            here.
+          </p>
+          <p>
+            <strong>Response :</strong> An object containing the user and a
+            token.
+          </p>
+
+          <!-- get match partner -->
+          <h3 id="get-information-on-your-match-partner">
+            Get information on your match partner
+          </h3>
+          <div class="code-container">
+            <code>Route = /users</code>
+            <code>Request = POST</code>
+            <code>Auth = required</code>
+          </div>
+          <p>Send the user id of your match partner.</p>
+          <p>
+            <strong>Format :</strong>
+            <code class="code-inline">
+              { id: the id of the match partner }
+            </code>
+          </p>
+          <p>
+            <strong>Response :</strong> An object containing the users general
+            information.
+          </p>
+
+          <!-- login -->
+          <h3 id="login">Login</h3>
+          <div class="code-container">
+            <code>Route = /login</code>
+            <code>Request = POST</code>
+            <code>Auth = not required</code>
+          </div>
+          <p>
+            To login you must send a valid email and password which must already
+            exist within the database.
+          </p>
+          <p>
+            <strong>Response :</strong> An object containing the user and a
+            token.
+          </p>
+
+          <!-- logout -->
+          <h3 id="logout">Logout</h3>
+          <div class="code-container">
+            <code>Route = /logout</code>
+            <code>Request = GET</code>
+            <code>Auth = not required</code>
+          </div>
+          <p>
+            Once this route is called we will remove the any auth tokens within
+            the request headers.
+          </p>
+          <p><strong>Response :</strong> A custom response object.</p>
+
+          <!-- add a saved book -->
+          <h3 id="add-a-saved-book">Add a saved book</h3>
+          <div class="code-container">
+            <code>Route = /addSavedBook</code>
+            <code>Request = POST</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through the user id of the current user and book id of the book
+            that user has saved.
+          </p>
+          <p>
+            <strong>Format :</strong>
+            <code class="code-inline">
+              { userId: the user id, bookId: the book id }
+            </code>
+          </p>
+          <p><strong>Response :</strong> A custom response object.</p>
+
+          <!-- remove a saved book -->
+          <h3 id="remove-a-saved-book">Remove a saved book</h3>
+          <div class="code-container">
+            <code>Route = /removeSavedBook</code>
+            <code>Request = POST</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through the user id of the current user and book id of the book
+            you would like to remove from the booksToRemember array.
+          </p>
+          <p>
+            <strong>Format :</strong>
+            <code class="code-inline">
+              { userId: the user id, bookId: the book id }
+            </code>
+          </p>
+          <p><strong>Response :</strong> A custom response object.</p>
+
+          <!-- get all your matches -->
+          <h3 id="get-all-your-matches">Get all your matches</h3>
+          <div class="code-container">
+            <code>Route = /(id of the current user)</code>
+            <code>Request = GET</code>
+            <code>Auth = required</code>
+          </div>
+          <p>Making this call will grab all the matches the user has made.</p>
+          <p><strong>Response :</strong> An array containing match objects.</p>
+
+          <!-- update user -->
+          <h3 id="update-your-profile">Update your profile</h3>
+          <div class="code-container">
+            <code>Route = /(id of the current user)</code>
+            <code>Request = PUT</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through an object containing anything in the user schema that
+            is not of type id.
+          </p>
+          <p><strong>Response :</strong> The user object.</p>
+
+          <!-- delete user -->
+          <h3 id="delete-your-profile">Delete your profile</h3>
+          <div class="code-container">
+            <code>Route = /(id of the current user)</code>
+            <code>Request = DELETE</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            When this call is made the user will be deleted along with any books
+            and matches the user has created.
+          </p>
+          <p><strong>Response :</strong> A custom response object.</p>
+
+          <!-- show interest in a book -->
+          <h3 id="show-interest-in-a-book">Show interest in a book</h3>
+          <div class="code-container">
+            <code>Route = /(id of the current user)</code>
+            <code>Request = POST</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through the id of the book the user is interested in, we will
+            check for a match and send you a response in coradination with
+            whether a match is created.
+          </p>
+          <p>
+            <strong>Format :</strong>
+            <code class="code-inline"> { bookId: the book id } </code>
+          </p>
+          <p><strong>Response :</strong> A custom response object.</p>
+
+          <!-- get the users library -->
+          <h3 id="get-the-users-library">Get the users library</h3>
+          <div class="code-container">
+            <code>Route = /library/(id of the current user)</code>
+            <code>Request = POST</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through an object containing city, language and genre. If some
+            or all of the fields are empty, the parameters for the request will
+            be defaulted to any and no filter will be set.
+          </p>
+          <p>
+            <strong>Format :</strong>
+            <code class="code-inline">
+              { city: city the user wants to trade books in, languange: language
+              the user is interested in, genre: genre the user is interested in
+              }
+            </code>
+          </p>
+          <p><strong>Response :</strong> An array containing book objects.</p>
         </section>
+
+        <!-- book section -->
         <section>
           <h2 id="books">Books</h2>
+          <p>
+            All books routes start with:
+            <code class="code-inline">BaseURL/books</code>
+          </p>
           <h3 id="book-schema">Book schema</h3>
           <div class="code-container">
             <code id="bookSchema"></code>
           </div>
+
+          <!-- add a book -->
+          <h3 id="add-a-book">Add a book</h3>
+          <div class="code-container">
+            <code>Route = /</code>
+            <code>Request = POST</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            To add a book, insert only the required fields of the book schema.
+            The
+            <code class="code-inline"
+              >subtitle, description, authors,isbn, pages,
+              personalDescription</code
+            >
+            and <code class="code-inline">selectedFiles</code> keys can also be
+            inserted here.
+          </p>
+          <p><strong>Response :</strong> A book object.</p>
+
+          <!-- get a single book -->
+          <h3 id="get-a-single-book">Get a single book</h3>
+          <div class="code-container">
+            <code>Route = /(id of the book)</code>
+            <code>Request = GET</code>
+            <code>Auth = required</code>
+          </div>
+          <p>Call this url to recieve a single book's details.</p>
+          <p><strong>Response :</strong> A book object.</p>
+
+          <!-- update a book -->
+          <h3 id="update-a-book">Update a book</h3>
+          <div class="code-container">
+            <code>Route = /(id of the book)</code>
+            <code>Request = PUT</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through an object containing anything in the book schema that
+            is not of type id.
+          </p>
+          <p><strong>Response :</strong> The book object.</p>
+
+          <!-- delete a book -->
+          <h3 id="delete-a-book">Delete a book</h3>
+          <div class="code-container">
+            <code>Route = /(id of the book)</code>
+            <code>Request = DELETE</code>
+            <code>Auth = required</code>
+          </div>
+          <p>Call this url to delete a book object.</p>
+          <p><strong>Response :</strong> A custom response.</p>
         </section>
+
+        <!-- match section -->
         <section>
           <h2 id="matches">Matches</h2>
+          <p>
+            All matches routes start with:
+            <code class="code-inline">BaseURL/matches</code>
+          </p>
           <h3 id="match-schema">Match schema</h3>
           <div class="code-container">
             <code id="matchSchema"></code>
           </div>
+
+          <!-- get a single match -->
+          <h3 id="get-a-single-match">Get a single match</h3>
+          <div class="code-container">
+            <code>Route = /(id of the match)</code>
+            <code>Request = GET</code>
+            <code>Auth = required</code>
+          </div>
+          <p>Call this url to recieve a single match's details.</p>
+          <p><strong>Response :</strong> A match object.</p>
+
+          <!-- update a match-->
+          <h3 id="update-a-match">Update a match</h3>
+          <div class="code-container">
+            <code>Route = /(id of the match)</code>
+            <code>Request = PUT</code>
+            <code>Auth = required</code>
+          </div>
+          <p>
+            Send through an object containing anything in the match schema that
+            is not of type id.
+          </p>
+          <p><strong>Response :</strong> The match object.</p>
+
+          <!-- delete a match -->
+          <h3 id="delete-a-match">Delete a Macth</h3>
+          <div class="code-container">
+            <code>Route = /(id of the match)</code>
+            <code>Request = DELETE</code>
+            <code>Auth = required</code>
+          </div>
+          <p>Call this url to delete a match object.</p>
+          <p><strong>Response :</strong> The match object.</p>
         </section>
       </main>
     </div>

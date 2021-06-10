@@ -47,12 +47,18 @@ header {
 
 h2 {
   font-size: 3.2rem;
-  padding: 10px 0;
+  padding: 20px 0;
+  color: var(--primary-dark);
+  text-align: center;
 }
 
 h3 {
   font-size: 2.6rem;
   padding: 6px 0;
+}
+
+p {
+  padding: 5px 0;
 }
 
 nav {
@@ -102,11 +108,15 @@ a:focus {
 
 main {
   display: inline-block;
-  padding: 5px 30px 0;
+  padding: 15px 30px 30px 0;
   max-width: 800px;
   margin: 0 auto;
   height: calc(100vh - 70px);
   overflow-y: auto;
+}
+
+code {
+  display: block;
 }
 
 /* classes */
@@ -115,8 +125,14 @@ main {
   display: flex;
 }
 
+.logo-container {
+  width: 50px;
+  height: 50px;
+}
+
 .code-container {
   margin: 10px;
+  padding: 4px 10px;
   border: 1px solid var(--white);
   border-radius: 4px;
   background-color: var(--white);
@@ -136,9 +152,18 @@ main {
   padding: 1px 0 1px 20px;
 }
 
+.code-inline {
+  display: inline;
+}
+
 .code-optional {
   padding: 1px 0 1px 20px;
   color: var(--text-faded);
+}
+
+/* link */
+.link:hover {
+  color: var(--primary-dark);
 }
 
 /* 
