@@ -7,6 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const UserSchema = new Schema(
   {
+    // general user information
     username: { type: String, required: true },
     aboutMe: String,
     email: { type: String, unique: true, required: true },
@@ -47,7 +48,7 @@ const UserSchema = new Schema(
     timestamps: true,
     toJSON: {
       transform: (docOriginal, docToReturn) => {
-        delete docToReturn.password; // hide password field in all res.json outputs...
+        delete docToReturn.password; // hide password field in all res.json outputs
       },
     },
   }

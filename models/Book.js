@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 
 const BookSchema = new Schema(
   {
-    // general book information maybe api
+    // general book information
     title: { type: String, required: true },
     subtitle: { type: String, required: false },
     description: { type: String, required: false },
@@ -18,7 +18,7 @@ const BookSchema = new Schema(
     language: { type: String, required: true },
     condition: { type: String, required: true },
     genre: { type: String, required: true },
-    // Pics
+    // pics
     selectedFiles: [{ type: String, required: true }],
     // availability by default
     reserved: { type: Boolean, default: false },

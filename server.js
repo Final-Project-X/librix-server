@@ -3,12 +3,12 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
+const socket = require('socket.io');
 const { webSocket } = require('./socket/socketio.js');
 const cookieParser = require('cookie-parser');
 const booksRouter = require('./routes/booksRouter');
 const usersRouter = require('./routes/usersRouter');
 const matchesRouter = require('./routes/matchesRouter');
-const socket = require('socket.io');
 
 const server = app.listen(PORT, () => {
   console.log(`👍 Backend Server started at http://localhost:${PORT}`);

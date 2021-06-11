@@ -65,9 +65,9 @@
         <section>
           <h2 id="getting-started">Getting Started</h2>
           <p>
-            You will need to make an account to accsess this API. For almost all
+            You will need to make an account to accsess this API, for almost all
             requests are user based and require a webtoken to be set in the
-            headers.
+            reques headers.
           </p>
           <h3 id="base-url">Base URL</h3>
           <p>
@@ -81,9 +81,9 @@
             not required to get a correct response.
           </p>
           <p>
-            On each request you will see a route and request type. The base url
-            is omitted in our documnetation but will ne to be added when you
-            make the request.
+            On each request you will see a route, request type and auth. The
+            base url is omitted in our documnetation but will need to be added
+            when you make the request.
           </p>
         </section>
 
@@ -175,8 +175,8 @@
             <code>Auth = required</code>
           </div>
           <p>
-            Send through the user id of the current user and book id of the book
-            that user has saved.
+            Send the user id of the current user and book id of the book that
+            user has saved.
           </p>
           <p>
             <strong>Format :</strong>
@@ -223,8 +223,8 @@
             <code>Auth = required</code>
           </div>
           <p>
-            Send through an object containing anything in the user schema that
-            is not of type id.
+            Send an object containing anything in the user schema that is not of
+            type id.
           </p>
           <p><strong>Response :</strong> The user object.</p>
 
@@ -249,9 +249,9 @@
             <code>Auth = required</code>
           </div>
           <p>
-            Send through the id of the book the user is interested in, we will
-            check for a match and send you a response in coradination with
-            whether a match is created.
+            Send the id of the book the user is interested in, we will check for
+            a match and send you a response in coordination with whether a match
+            is created.
           </p>
           <p>
             <strong>Format :</strong>
@@ -267,9 +267,9 @@
             <code>Auth = required</code>
           </div>
           <p>
-            Send through an object containing city, language and genre. If some
-            or all of the fields are empty, the parameters for the request will
-            be defaulted to any and no filter will be set.
+            Send an object containing city, language and genre. If some or all
+            of the fields are empty, the parameters for the request will be
+            defaulted to any and no filter will be set.
           </p>
           <p>
             <strong>Format :</strong>
@@ -305,7 +305,7 @@
             To add a book, insert only the required fields of the book schema.
             The
             <code class="code-inline"
-              >subtitle, description, authors,isbn, pages,
+              >subtitle, description, authors, isbn, pages,
               personalDescription</code
             >
             and <code class="code-inline">selectedFiles</code> keys can also be
@@ -331,8 +331,8 @@
             <code>Auth = required</code>
           </div>
           <p>
-            Send through an object containing anything in the book schema that
-            is not of type id.
+            Send an object containing anything in the book schema that is not of
+            type id.
           </p>
           <p><strong>Response :</strong> The book object.</p>
 
@@ -377,8 +377,8 @@
             <code>Auth = required</code>
           </div>
           <p>
-            Send through an object containing anything in the match schema that
-            is not of type id.
+            Send an object containing anything in the match schema that is not
+            of type id.
           </p>
           <p><strong>Response :</strong> The match object.</p>
 
