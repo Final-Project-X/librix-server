@@ -23,11 +23,7 @@
 }
 
 body {
-  background-image: linear-gradient(
-    to bottom right,
-    var(--neutral-background),
-    var(--secondary-light)
-  );
+  background-image: linear-gradient(167.03deg, #f6f2f1 57.62%, #faa96c 80.79%);
   width: 100vw;
   height: 100vh;
   font-size: 1.6rem;
