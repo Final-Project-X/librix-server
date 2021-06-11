@@ -13,7 +13,7 @@ Librix is a user based book exchange service. We provide a REST API built with E
 
 ## General
 
-Librix is still in development, we would appricate any support or feedback by clicking this [Link]() and getting in touch.
+Librix is still in development, we would appricate any support or feedback by clicking this [Link](https://librix-feedbackform.netlify.app/) and getting in touch.
 
 You can also visit our API documentation at [Librix Server](https://librix-server.herokuapp.com/)
 
@@ -45,9 +45,9 @@ A list of technologies used within the project:
 
 The librix team includes:
 
-[Christin Mette](https://github.com/chmette)
-[Joyce Sosaya](https://github.com/Winkel2019)
-[Laura de Paz](https://github.com/laurapacis)
-[Luke Dowling](https://github.com/luke-dowling)
-[Ohla Halat](https://github.com/olhanotolga)
-[Tomas Eliz](https://github.com/TomasEliz)
+- [Christin Mette](https://github.com/chmette)
+- [Joyce Sosaya](https://github.com/Winkel2019)
+- [Laura de Paz](https://github.com/laurapacis)
+- [Luke Dowling](https://github.com/luke-dowling)
+- [Ohla Halat](https://github.com/olhanotolga)
+- [Tomas Eliz](https://github.com/TomasEliz)
