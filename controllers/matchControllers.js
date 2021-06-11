@@ -5,7 +5,6 @@ const customError = require('../helpers/customErrorHandler');
 const customResponse = require('../helpers/customResponseHandler');
 const mongoose = require('mongoose');
 
-// just for checking reason
 exports.getMatches = async (req, res, next) => {
   let matches = await Match.find();
   res.json(matches);
@@ -18,7 +17,6 @@ exports.getMatch = async (req, res, next) => {
     let match = await Match.findById(id)
       .populate('bookOne')
       .populate('bookTwo');
-
     if (!match) {
       next(customError(`Match with ID: ${id} does not exist`, 400));
     }
@@ -28,23 +26,23 @@ exports.getMatch = async (req, res, next) => {
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
     }
-
     next(err);
   }
 };
 
 exports.addMatch = async (req, res, next) => {
   const { bookOne, matchBooks } = req.body;
-  //console.log('body =>', req.body);
 
   try {
     let matchesArray = [];
+
     for (let i = 0; i < matchBooks.length; i++) {
       let newMatch = await Match.create({
         bookOne: bookOne,
         bookTwo: matchBooks[i]._id,
       });
       matchesArray.push(newMatch._id);
+
       let match = await Match.findOne(newMatch._id)
         .populate('bookOne')
         .populate('bookTwo');
@@ -56,7 +54,7 @@ exports.addMatch = async (req, res, next) => {
         $push: { matches: match._id },
       });
     }
-    console.log(`stored ${matchesArray.length} matches `);
+
     res.json(customResponse(`You got ${matchesArray.length} matches`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
@@ -71,15 +69,13 @@ exports.updateMatch = async (req, res, next) => {
 
   try {
     const match = await Match.findById(id);
-
     if (!match) {
-      next(customError(`Match with ID: ${id} does not exist`, 400));
-      return;
+      return next(customError(`Match with ID: ${id} does not exist`, 400));
     }
 
     Object.assign(match, req.body);
     const updatedMatch = await match.save();
-    console.log('match updated');
+
     res.json(updatedMatch);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
@@ -89,7 +85,6 @@ exports.updateMatch = async (req, res, next) => {
   }
 };
 
-// delete Match
 exports.deleteMatch = async (req, res, next) => {
   const { id } = req.params;
   const { userId } = req.body;
@@ -98,7 +93,6 @@ exports.deleteMatch = async (req, res, next) => {
     const match = await Match.findById(id)
       .populate('bookOne')
       .populate('bookTwo');
-
     if (!match) {
       next(customError(`Match with ID: ${id} does not exist`, 400));
       return;
@@ -123,6 +117,7 @@ exports.deleteMatch = async (req, res, next) => {
     }
 
     await match.delete();
+
     res.json(match);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
@@ -135,23 +130,15 @@ exports.deleteMatch = async (req, res, next) => {
 exports.updateBookAndMatchStatus = async (req, res, next) => {
   const { id } = req.params;
   const { bookId } = req.body;
-
   if (!id || !bookId)
-    return next(customError('why did you not include these things!', 400));
+    return next(customError('User id and book id must be provided.', 400));
 
   try {
-    await Book.findByIdAndUpdate(
-      bookId,
-      {
-        reserved: true,
-      },
-      {
-        new: true,
-      }
-    );
+    await Book.findByIdAndUpdate(bookId, {
+      reserved: true,
+    });
 
     const match = await Match.findById(id);
-
     if (!match) {
       return next(customError(`Match with ID: ${id} does not exist`, 400));
     }
@@ -179,17 +166,16 @@ exports.updateBookAndMatchStatus = async (req, res, next) => {
 //delete all after status is exchanged
 exports.deleteAfterExchange = async (req, res, next) => {
   const { match } = req.body;
-  // console.log(match);
+  if (!match) {
+    return next(
+      customError(
+        `deleteController: Match with ID: ${matchId} does not exist`,
+        400
+      )
+    );
+  }
 
   try {
-    if (!match) {
-      return next(
-        customError(
-          `deleteController: Match with ID: ${matchId} does not exist`,
-          400
-        )
-      );
-    }
     if (
       match.bookOneStatus !== 'received' ||
       match.bookTwoStatus !== 'received'
@@ -200,12 +186,10 @@ exports.deleteAfterExchange = async (req, res, next) => {
         )
       );
     }
-    console.log('start deleting all the data...');
 
     //get Books
     const bookOne = await Book.findById(match.bookOne);
     const bookTwo = await Book.findById(match.bookTwo);
-
     if (!bookOne || !bookTwo) {
       return next(customError(`one or both of the book do not exist`, 400));
     }
@@ -226,14 +210,15 @@ exports.deleteAfterExchange = async (req, res, next) => {
         data.bookOne.toString() === bookTwo._id.toString() ||
         data.bookTwo.toString() === bookTwo._id.toString()
     );
-    // combine and unify matches
+
+    // combine and unify the matches
     let allMatches = [...matchesWithBookOne, ...matchesWithBookTwo];
     let allMatchesToId = allMatches.map((item) => item._id.toString());
     let matchesWithBooks = [...new Set(allMatchesToId)];
 
-    // delete all matches where the books are in
+    // delete only matches where the books are in
     if (matchesWithBooks.length == 0) {
-      return console.log('there are no matches with these book');
+      return;
     }
 
     for (let i = 0; i < matchesWithBooks.length; i++) {
@@ -241,23 +226,19 @@ exports.deleteAfterExchange = async (req, res, next) => {
         .populate('bookOne')
         .populate('bookTwo');
 
-      console.log('matchToDelete', matchToDelete._id);
-
       await User.findByIdAndUpdate(matchToDelete.bookOne.owner, {
         $pull: { matches: matchToDelete._id },
       });
       await User.findByIdAndUpdate(matchToDelete.bookTwo.owner, {
         $pull: { matches: matchToDelete._id },
       });
+
       await matchToDelete.delete();
-      console.log('deleted match ', matchToDelete._id);
     }
 
-    console.log(`deleted ${matchesWithBooks.length} Matches`);
-
     await match.delete();
-    // Take book out of all user which are interested in book
 
+    // Take book out of all users who are interested in the book
     bookOne.interestedUsers.map(
       async (user) =>
         await User.findByIdAndUpdate(user, {
@@ -272,6 +253,7 @@ exports.deleteAfterExchange = async (req, res, next) => {
         })
     );
 
+    //take interested users out of the books
     await Book.findByIdAndUpdate(bookOne._id, {
       $pull: { interestedUsers: userTwo._id },
     });
@@ -292,6 +274,7 @@ exports.deleteAfterExchange = async (req, res, next) => {
     // delete books
     await bookOne.delete();
     await bookTwo.delete();
+
     res.json(customResponse(`Both Books with all connections are deleted.`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {

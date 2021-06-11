@@ -10,7 +10,6 @@ exports.webSocket = (io) => {
 
     // message: {sender: username, date : new Date() , content: text, matchId}
     socket.on('chat', (message) => {
-      console.log(message);
       //saveMessage(message);
       io.sockets.emit('chat', message);
     });

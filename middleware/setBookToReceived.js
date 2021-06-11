@@ -20,8 +20,6 @@ exports.setBookToReceived = async (req, res, next) => {
         },
         { new: true }
       );
-
-      console.log(`set Status of book One to: ${match.bookOneStatus}`);
     }
 
     if (match.bookTwo.toString() === matchBookId.toString()) {
@@ -32,8 +30,6 @@ exports.setBookToReceived = async (req, res, next) => {
         },
         { new: true }
       );
-
-      console.log(`set Status of book Two to: ${match.bookTwoStatus}`);
     }
 
     req.body = { match };

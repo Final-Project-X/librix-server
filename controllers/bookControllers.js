@@ -6,34 +6,32 @@ const mongoose = require('mongoose');
 
 exports.getBook = async (req, res, next) => {
   const { id } = req.params;
+
   try {
     let book = await Book.findById(id);
-    // id is a valid mongoose id
     if (!book) {
       return next(customError(`Book with ID: ${id} does not exist`, 400));
     }
+
     res.json(book);
   } catch (err) {
-    // id is not a valid mongoose id
     if (err instanceof mongoose.Error.CastError) {
       next(customError(`ID: ${id} is not valid`, 400));
     }
-    // server error
     next(err);
   }
 };
 
+// get the user a selection of books that the user can then swipe through
 exports.getUserLibrary = async (req, res, next) => {
   let { city, genre, language } = req.body;
   const { id } = req.params;
-  
+
   try {
     const user = await User.findById(id).populate('matches');
-
     if (!user) {
       return next(customError(`No user with id: ${id} exists`, 400));
     }
-
     if (city) {
       city = city.toLowerCase();
     }
@@ -64,14 +62,12 @@ exports.getUserLibrary = async (req, res, next) => {
 
     const filteredUserLibrary = userLibrary.filter((book) => {
       let isNotAlreadyAssosiatedWithUser = true;
-
       for (let i = 0; i < booksToCheck.length; i++) {
         if (booksToCheck[i].toString() === book._id.toString()) {
           isNotAlreadyAssosiatedWithUser = false;
           break;
         }
       }
-
       if (isNotAlreadyAssosiatedWithUser) {
         return book;
       }
@@ -91,9 +87,7 @@ exports.getBooks = async (req, res) => {
   res.json(books);
 };
 
-//to your BooksToOffer
 exports.addBook = async (req, res, next) => {
-  //todo: create middleware to check the req.body -> add bookSanitize?
   const bookData = req.body;
   const { owner } = req.body;
 
@@ -104,6 +98,7 @@ exports.addBook = async (req, res, next) => {
       { $push: { booksToOffer: newBook._id } },
       { new: true }
     );
+
     res.json(newBook);
   } catch (err) {
     next(err);
@@ -119,8 +114,10 @@ exports.updateBook = async (req, res, next) => {
       next(customError(`Book with ID: ${id} does not exist`, 400));
       return;
     }
+
     Object.assign(book, req.body);
     const bookUpdated = await book.save();
+
     res.json(bookUpdated);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
@@ -150,6 +147,7 @@ exports.deleteBook = async (req, res, next) => {
       );
     }
 
+    // remove the book from any interested users
     bookToDelete.interestedUsers.map(
       async (user) =>
         await User.findByIdAndUpdate(user, {
@@ -157,11 +155,13 @@ exports.deleteBook = async (req, res, next) => {
         })
     );
 
+    // remove the book from the user
     user.update({
       $pull: { booksToOffer: bookToDelete._id },
     });
 
     bookToDelete.delete();
+
     res.json(customResponse(`Your book has been deleted.`));
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
@@ -180,6 +180,7 @@ exports.addInterestedUser = async (req, res, next) => {
     await User.findByIdAndUpdate(id, {
       $push: { booksInterestedIn: bookId },
     });
+
     next();
   } catch (err) {
     next(err);
@@ -188,13 +189,12 @@ exports.addInterestedUser = async (req, res, next) => {
 
 exports.addBookToSavedBooks = async (req, res, next) => {
   const { userId, bookId } = req.body;
-
   if (!userId || !bookId) {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
+
   try {
     let user = await User.findById(userId);
-
     if (!user) {
       return next(
         customError(`The user with id: ${userId} does not exists`, 400)
@@ -205,6 +205,7 @@ exports.addBookToSavedBooks = async (req, res, next) => {
       return next(customError('Book is already saved', 400));
     }
 
+    // save this book for the user
     await user.update({
       $push: { booksToRemember: bookId },
     });
@@ -217,36 +218,30 @@ exports.addBookToSavedBooks = async (req, res, next) => {
 
 exports.deleteBookFromSavedBooks = async (req, res, next) => {
   const { userId, bookId } = req.body;
-
   if (!userId || !bookId) {
     return next(customError('A user ID and a book ID must be provided', 400));
   }
 
-  const user = await User.findById(userId);
-
-  if (!user) {
-    return next(customError(`User with id: ${userId} does not exist`, 400));
-  }
-
-  if (!user.booksToRemember.includes(bookId)) {
-    return next(
-      customError(
-        `Book with id: ${bookId} is not found in this users saved books`,
-        400
-      )
-    );
-  }
-
   try {
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        $pull: { booksToRemember: bookId },
-      },
-      {
-        new: true, // could be deleted cause we are not sending it
-      }
-    );
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(customError(`User with id: ${userId} does not exist`, 400));
+    }
+
+    if (!user.booksToRemember.includes(bookId)) {
+      return next(
+        customError(
+          `Book with id: ${bookId} is not found in this users saved books`,
+          400
+        )
+      );
+    }
+
+    // remove the book from the saved books
+    await User.findByIdAndUpdate(userId, {
+      $pull: { booksToRemember: bookId },
+    });
+
     res.json(customResponse(`Book is deleted from Saved Books`));
   } catch (err) {
     next(err);

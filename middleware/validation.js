@@ -2,11 +2,6 @@ const { body, validationResult } = require('express-validator');
 const customError = require('../helpers/customErrorHandler');
 
 exports.validateBook = (req, res, next) => {
-  //for checking
-  console.log(
-    'This comes from the custom book validation middleware',
-    req.body
-  );
   const book = req.body;
 
   if (book.authors) {

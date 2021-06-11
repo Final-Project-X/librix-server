@@ -39,7 +39,6 @@ router
   .route('/')
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
-//TODO delete get users
 router.route('/users').get(getUsers).post(auth, getMatchPartner);
 
 router.route('/login').post(loginUser);
@@ -63,7 +62,6 @@ router
     addMatch
   );
 
-// get user library is a post call
 router.route('/library/:id').post(auth, getUserLibrary);
 
 module.exports = router;
