@@ -49,5 +49,5 @@ The librix team includes:
 - [Joyce Sosaya](https://github.com/Winkel2019)
 - [Laura de Paz](https://github.com/laurapacis)
 - [Luke Dowling](https://github.com/luke-dowling)
-- [Ohla Halat](https://github.com/olhanotolga)
+- [Olha Halat](https://github.com/olhanotolga)
 - [Tomas Eliz](https://github.com/TomasEliz)
