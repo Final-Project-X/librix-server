@@ -10,6 +10,7 @@ exports.isMatch = async (req, res, next) => {
 
   try {
     const user = await User.findById(id).populate('matches');
+    console.log(user);
 
     if (!user) {
       return next(customError(`User with ID: ${id} does not exist`, 400));
@@ -17,6 +18,11 @@ exports.isMatch = async (req, res, next) => {
 
     // find and populate the owner of the book
     const checkBookOwner = await Book.findById(bookId).populate('owner');
+    if (!checkBookOwner) {
+      return next(customError(`Book with ${id} does not exist`));
+    }
+
+    console.log('checkBookOwner', checkBookOwner);
 
     const findBooksToMatch = checkBookOwner.owner.booksInterestedIn.map(
       (item) => item._id

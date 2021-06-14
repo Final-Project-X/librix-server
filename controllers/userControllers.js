@@ -182,9 +182,8 @@ exports.loginUser = async (req, res, next) => {
   try {
     let user = await User.findOne({ email })
       .populate('booksToOffer')
-      .populate('booksToRemember')
-      .populate('booksInterestedIn')
-      .populate('matches');
+      .populate('booksToRemember');
+
     if (!user) {
       return next(customError('User with given email not found!', 400));
     }
@@ -196,7 +195,7 @@ exports.loginUser = async (req, res, next) => {
 
     const token = user.generateToken();
 
-    res.send({ user, token });
+    res.json({ user, token });
   } catch (err) {
     next(err);
   }
