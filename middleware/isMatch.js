@@ -17,14 +17,21 @@ exports.isMatch = async (req, res, next) => {
 
     // find and populate the owner of the book
     const checkBookOwner = await Book.findById(bookId).populate('owner');
+    if (!checkBookOwner) {
+      return next(customError(`Book with ${id} does not exist`));
+    }
+
+    if (!checkBookOwner.owner === null) {
+      return next(customError(`something went wrong, please try again`));
+    }
 
     const findBooksToMatch = checkBookOwner.owner.booksInterestedIn.map(
       (item) => item._id
     );
 
-    let approve = true;
-
     for (item of findBooksToMatch) {
+      let approve = true;
+
       let bookTwo = await Book.findById(item);
 
       if (!bookTwo) {
@@ -43,24 +50,25 @@ exports.isMatch = async (req, res, next) => {
         approve = false;
       }
 
-      const checkIfMatchExists = (data) => {
-        if (
-          (data.bookOne.toString() === bookId ||
-            data.bookOne.toString() === bookTwo._id.toString()) &&
-          (data.bookTwo.toString() === bookId ||
-            data.bookTwo.toString() === bookTwo._id.toString())
-        ) {
-          return true;
-        } else return false;
-      };
+      if (user.matches.length > 0) {
+        const checkIfMatchExists = (data) => {
+          if (
+            (data.bookOne.toString() === bookId.toString() ||
+              data.bookOne.toString() === bookTwo._id.toString()) &&
+            (data.bookTwo.toString() === bookId.toString() ||
+              data.bookTwo.toString() === bookTwo._id.toString())
+          ) {
+            return true;
+          } else return false;
+        };
 
-      for (userMatch of user.matches) {
-        const doesExist = checkIfMatchExists(userMatch);
-        if (doesExist) {
-          approve = false;
+        for (userMatch of user.matches) {
+          const doesExist = checkIfMatchExists(userMatch);
+          if (doesExist) {
+            approve = false;
+          }
         }
       }
-
       // if approve has not been changed to false, add this book to matchBooks array
       if (approve) {
         matchBooks.push(bookTwo);
