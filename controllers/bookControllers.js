@@ -176,11 +176,22 @@ exports.addInterestedUser = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    await Book.findByIdAndUpdate(bookId, { $push: { interestedUsers: id } });
-    await User.findByIdAndUpdate(id, {
-      $push: { booksInterestedIn: bookId },
-    });
+    let book = await Book.findByIdAndUpdate(
+      bookId,
+      { $push: { interestedUsers: id } },
+      { new: true }
+    );
 
+    let user = await User.findByIdAndUpdate(
+      id,
+      {
+        $push: { booksInterestedIn: bookId },
+      },
+      { new: true }
+    );
+
+    req.params = { id: user._id };
+    req.body = { bookId: book._id };
     next();
   } catch (err) {
     next(err);
